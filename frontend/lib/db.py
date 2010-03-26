@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, \
     Table, Column, MetaData, ForeignKey, \
     Integer, Boolean, Float, String
 
-db = create_engine('sqlite:///db.sqlite', echo=True)
+engine = create_engine('sqlite:///db.sqlite', echo=True)
 meta = MetaData()
 
 scenarios = Table('scenarios', meta,
@@ -35,3 +35,5 @@ points = Table('points', meta,
     Column('latitude', Float),
     Column('grid', None, ForeignKey('grids.id')),
 )
+
+meta.create_all(engine)
