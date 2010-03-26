@@ -1,0 +1,51 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
+   "http://www.w3.org/TR/html4/frameset.dtd">
+<HTML>
+<HEAD>
+<TITLE>A simple frameset document</TITLE>
+   <Style>
+    BODY, P,TD{ font-family: Arial,Verdana,Helvetica, sans-serif; font-size: 10pt }
+    A{font-family: Arial,Verdana,Helvetica, sans-serif;}
+    B {	font-family : Arial, Helvetica, sans-serif;	font-size : 12px;	font-weight : bold;}
+    .error_strings{ font-family:Verdana; font-size:10px; color:#660000;}
+    </Style>
+    <script src="http://burn.giseis.alaska.edu/scripts/gen_validatorv31.js" type="text/javascript"></script>
+</HEAD>
+
+<body>
+<!--h2><FONT COLOR="RED">DEBUG MODE!!! <BR />PLEASE DO NOT SUBMIT ANY JOBS <BR/> UNTIL FURTHER NOTICE.</FONT></h2 -->
+<!--a href='Tsunamis_in_Alaska.kmz' > KMZ animation file.</a -->
+<BR>To <a href='/cgi-bin/download.cgi' target="_blank"> download / upload</a> a file. <BR>
+To <a href='/cgi-bin/show_scenarios.cgi' target="_blank"> check </a> workload. <BR>
+To <a href='/cgi-bin/priv/master.cgi' target="_blank"> administer </a> workload. <BR>
+
+<br />
+<form name="questions" method="post" action="/cgi-bin/feedback.pl">
+   <table border="0" bgcolor="#cccccc">
+         <tr><td><b>Questions:</b></td><td><div id='questions_errorloc' class='error_strings'></div></td></tr>
+         <tr><td>Your name:    </td><td><input type="text" name="name" value=""></td></tr>
+         <tr><td>Your email:   </td><td><input type="text" name="email" value=""></td></tr>
+         <tr><td>Your comment: </td><td><textarea cols="40" rows="5" name="comment"></textarea></td></tr>
+         <tr><td></td><td> <input value="Comment" type="submit"></td></tr>
+</table>
+</form> 
+<script language="JavaScript" type="text/javascript">
+//You should create the validator only after the definition of the HTML form
+  var frmvalidator  = new Validator("questions");
+  frmvalidator.EnableOnPageErrorDisplaySingleBox();
+  frmvalidator.EnableMsgsTogether();
+
+  frmvalidator.addValidation("name","req","Please enter your name.");
+  frmvalidator.addValidation("name","maxlen=16");
+  frmvalidator.addValidation("name","alpha");
+
+  frmvalidator.addValidation("email","maxlen=50");
+  frmvalidator.addValidation("email","req");
+  frmvalidator.addValidation("email","email");
+
+  frmvalidator.addValidation("comment","req","Please enter your comment.");
+  frmvalidator.addValidation("comment","maxlen=600");
+</script>
+</body>
+</HTML>

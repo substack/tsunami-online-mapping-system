@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
+   "http://www.w3.org/TR/html4/frameset.dtd">
+<HTML>
+<HEAD>
+<TITLE>KML Layers</TITLE>
+    <script type="text/javascript">
+
+     
+     function load() {
+       for(var i=0;i<7;i++)
+          if(parent.opener.priority_vis[i] == 1)
+                document.priority_list.List[i].checked=true;
+          else 
+                document.priority_list.List[i].checked=false;
+    }
+
+    </script>
+</HEAD>
+
+<BODY onload="load()">
+<FORM NAME="priority_list">
+<p class="legend"><strong>Priority list</strong></p>
+
+<input type="checkbox" name=List value="0" onClick="parent.opener.showPriority(this.value);" unchecked> Level 1 <br />
+<input type="checkbox" name=List value="1" onClick="parent.opener.showPriority(this.value);" unchecked> Level 2 <br />
+<input type="checkbox" name=List value="2" onClick="parent.opener.showPriority(this.value);" unchecked> Level 3 <br />
+<input type="checkbox" name=List value="3" onClick="parent.opener.showPriority(this.value);" unchecked> Level 4 <br />
+<input type="checkbox" name=List value="4" onClick="parent.opener.showPriority(this.value);" unchecked> Level 5 <br />
+<input type="checkbox" name=List value="5" onClick="parent.opener.showPriority(this.value);" unchecked> Level 6 <br />
+<input type="checkbox" name=List value="6" onClick="parent.opener.showPriority(this.value);" unchecked> Level 7 <br />
+<br/>
+<input type="button" value="Close Window" onclick="self.close();" />
+</FORM>
+</BODY>
+</HTML>
+
+

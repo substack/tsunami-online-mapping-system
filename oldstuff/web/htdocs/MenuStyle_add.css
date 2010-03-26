@@ -1,0 +1,79 @@
+#menu ul { 
+	margin: 0; 
+	padding: 0; 
+	list-style: none;
+	width: 150px; /* Width of Menu Items */ 
+	border-bottom: 1px solid #ccc; 
+} 
+
+#menu ul li { 
+	position: relative; 
+} 
+
+#menu li ul { 
+	position: absolute; 
+	left: 149px; /*Set 1px less than menu width */ 
+	top: 0; 
+	display: block; 
+} 
+
+#menu li:hover ul {
+	display: block; 
+} 
+
+#menu li:hover>ul { 
+	visibility:visible; 
+} 
+
+#menu ul ul {
+	visibility:hidden; 
+} 
+
+/* Fix IE. Hide from IE Mac \*/ 
+* html #menu ul li { float: left; height: 1%; } 
+* html #menu ul li a { height: 1%; } 
+/* End */ 
+
+/* Make-up syles */ 
+
+#menu ul, li { 
+	margin: 0 0 0 0; 
+} 
+
+/* Styles for Menu Items */ 
+#menu ul a { 
+	display: block; 
+	text-decoration: none; 
+	color: #777; 
+	background: #fff; /* IE6 Bug */ 
+	padding: 5px; 
+	border: 1px solid #ccc; 
+	border-bottom: 0; 
+} 
+
+/* Hover Styles */ 
+#menu ul a:hover { 
+	color: #E2144A; 
+	background: #f9f9f9; 
+} 
+
+/* Sub Menu Styles */ 
+#menu li ul a { 
+	text-decoration: none; 
+	color: #77F; 
+	background: #fff; /* IE6 Bug */ 
+	padding: 5px; 
+	border: 1px solid #ccc; 
+	border-bottom: 0; 
+} 
+
+/* Sub Menu Hover Styles */ 
+#menu li ul a:hover { 
+	color: #E2144A; 
+	background: #f9f9f9; 
+} 
+
+/* Icon Styles */ 
+#menu ul a.submenu {background:#fff url("r_arrow.gif") no-repeat right; } 
+#menu ul a.submenu:hover {background:#f9f9f9 url("r_arrow.gif") no-repeat right;}
+
