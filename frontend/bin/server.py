@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 
-from juno import *
+from itty import *
 
-@route('/')
+@get('/')
 def index(web) :
-    return str(dir(web))
+    return 'Hello!'
 
-@route(':')
+@get('/:')
 def moo(web) :
-    return 'default'
+    return 'default route'
 
-run()
+if __name__ == '__main__' :
+    import sys, os
+    if sys.argv[0] == '' : sys.argv[0] = './'
+    dbfile = '%s/../data/db.sqlite3' % os.path.abspath(
+        os.path.dirname(sys.argv[0])
+    )
+    run_itty()
