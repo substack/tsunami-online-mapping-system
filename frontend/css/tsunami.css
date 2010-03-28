@@ -1,0 +1,14 @@
+form#deformation {
+    background-color: rgb(200,200,200);
+    padding: 0.5em;
+    color: black;
+}
+
+form#deformation table tr th {
+    background-color: rgb(230,230,230);
+    width: 15em;
+}
+
+form#deformation table tr td {
+    background-color: rgb(170,170,170);
+}
