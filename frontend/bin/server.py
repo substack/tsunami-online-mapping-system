@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from itty import *
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, Template, FileSystemLoader
 
 class TsunamiApp :
     def __init__(self,basepath) :
@@ -17,20 +17,19 @@ class TsunamiApp :
                 '%s/templates' % self.basepath,
         ))
         
-        self.layout = self.env.get_template('layout.html')
-        
         run_itty()
     
-    def render(self, filename, *args) :
+    def render(self, filename, *args, **kwargs) :
         template = self.env.get_template(filename)
-        return app.layout.render(content=template.render(*args))
+        kwargs['layout'] = self.env.get_template(filename)
+        return str(template.render(*args, **kwargs))
 
 app = None
 
 @get('/')
 def index(web) :
-    return str(app.render('index.html'))
-    
+    return app.render('index.html')
+
 if __name__ == '__main__' :
     import sys, os
     if sys.argv[0] == '' : sys.argv[0] = './'
