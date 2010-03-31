@@ -1,7 +1,15 @@
 #!/usr/bin/env python
-
 from itty import *
 from jinja2 import Environment, Template, FileSystemLoader
+
+# add lib to search path
+if sys.argv[0] == '' : sys.argv[0] = './'
+basepath = '%s/../' % os.path.abspath(
+    os.path.dirname(sys.argv[0])
+)
+sys.path.append('%s/lib' % basepath)
+
+import db
 
 class TsunamiApp :
     def __init__(self,basepath) :
@@ -31,7 +39,7 @@ app = None
 
 @get('/')
 def index(request) :
-    return app.render('index.html')
+    return app.render('index.html', deformations="foo bar baz".split())
 
 @get('/css/(?P<filename>.+)')
 def css(request,filename) :
@@ -40,11 +48,13 @@ def css(request,filename) :
         content_type=content_type(filename)
     )
 
+#@get('/data/jobs/(?P<job_id>)')
+#def jobs(request, job_id) :
+
+#@get('/data/jobs')
+#def jobs(request) :
+
 if __name__ == '__main__' :
     import sys, os
-    if sys.argv[0] == '' : sys.argv[0] = './'
-    basepath = '%s/../' % os.path.abspath(
-        os.path.dirname(sys.argv[0])
-    )
     app = TsunamiApp(basepath)
     app.run()
