@@ -14,11 +14,12 @@
         map.setCenter(new google.maps.LatLng(59, -152.1419), 5);
         map.addControl(new google.maps.LargeMapControl());
         map.disableDoubleClickZoom();
-        
-        var deformation = $("#deformation_form");
-        canvas.height(
-            $(document).height()
-            - deformation.outerHeight()
+        $(window).resize();
+    });
+    $(window).resize(function () {
+        $("#map_canvas").height(
+            $(window).height()
+            - $("#control_panel").outerHeight()
             - 16
         );
     });
