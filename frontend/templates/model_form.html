@@ -1,4 +1,4 @@
-<form action="/create_scenario" method="post" id="deformation">
+<form action="/create_scenario" method="post" id="deformation_form">
     <table>
         <tr>
             <th>
@@ -10,6 +10,46 @@
                         <option value="{{ name | e }}">{{ name | e }}</option> 
                     {% endfor %}
                 </select>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="modeling_time">Modeling Time (hours)</label>
+            </th>
+            <td>
+                <input type="text" name="modeling_time" value="1.0">
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="time_step">Time Step (seconds)</label>
+            </th>
+            <td>
+                <input type="text" name="time_step" value="1.0">
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="output_step">Output Step (seconds)</label>
+            </th>
+            <td>
+                <input type="text" name="output_step" value="300.0">
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="sea_level">Sea Level (meters)</label>
+            </th>
+            <td>
+                <input type="text" name="output_step" value="300.0">
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="bottom_friction">Bottom Friction</label>
+            </th>
+            <td>
+                <input type="text" name="bottom_friction" value="0.03">
             </td>
         </tr>
         <tr>

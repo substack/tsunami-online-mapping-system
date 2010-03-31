@@ -24,13 +24,13 @@ class DB(object) :
             Column('id', Integer,  primary_key=True),
             Column('scenarios', None, ForeignKey('scenarios.id')),
             Column('status', String, nullable=False), # pending running complete failed
-	    Column('person', String), # the "Investigator" of the senario
-	    Column('name', String),
-	    Column('cputime', Integer),
-	    Column('deformation', String, nullable=False), # the deformation to select
-	    Column('nodes', String, nullable=False),
-	    Column('node_type', String, nullable=False), # type of node on HPC to use
-	    Column('qtype', string), # Queue type
+            Column('person', String), # the "Investigator" of the senario
+            Column('name', String),
+            Column('cputime', Integer),
+            Column('deformation', String, nullable=False), # the deformation to select
+            Column('nodes', String, nullable=False),
+            Column('node_type', String, nullable=False), # type of node on HPC to use
+            Column('qtype', string), # Queue type
         )
         
         self.grids = Table('grids', self.meta,

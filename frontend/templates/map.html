@@ -1,0 +1,26 @@
+<script
+    type="text/javascript"
+    src="http://www.google.com/jsapi?key=ABQIAAAAG07sBB-qC9yaNXELGJpf5BRrbJnNmETF966luGlbSTr_RfkmQBR_r9lzzhGueAMWoH_XbKNIdXA-uw"
+></script>
+<script
+    type="text/javascript"
+    src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
+></script>
+<script type="text/javascript">
+    google.load("maps", "2");
+    google.setOnLoadCallback(function () {
+        var canvas = $("#map_canvas");
+        var map = new google.maps.Map2(canvas.get(0));
+        map.setCenter(new google.maps.LatLng(59, -152.1419), 5);
+        map.addControl(new google.maps.LargeMapControl());
+        map.disableDoubleClickZoom();
+        
+        var deformation = $("#deformation_form");
+        canvas.height(
+            $(document).height()
+            - deformation.outerHeight()
+            - 16
+        );
+    });
+</script>
+<div id="map_canvas"></div>
