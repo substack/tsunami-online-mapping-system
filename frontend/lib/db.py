@@ -30,7 +30,7 @@ class DB(object) :
             Column('deformation', String, nullable=False), # the deformation to select
             Column('nodes', String, nullable=False),
             Column('node_type', String, nullable=False), # type of node on HPC to use
-            Column('qtype', string), # Queue type
+            Column('qtype', String), # Queue type
         )
         
         self.grids = Table('grids', self.meta,
@@ -51,3 +51,15 @@ class DB(object) :
         )
         
         self.meta.create_all(self.engine)
+
+class Grids(object):
+    def _init_(self, id, name):
+        self.id = id
+        self.name = name
+
+    def _repr_(self):
+        return "<User('%s', '%s')>" % (self.id, self.name)
+
+#from sqlalchemy.orm import mapper
+#mapper(Grids,grids)
+
