@@ -11,6 +11,9 @@ sys.path.append('%s/lib' % basepath)
 
 import db
 
+host = '0.0.0.0'
+port = 8081
+
 class TsunamiApp :
     def __init__(self,basepath) :
         self.basepath = basepath
@@ -25,7 +28,7 @@ class TsunamiApp :
             self.root('templates')
         ))
         
-        run_itty()
+        run_itty(config='__main__')
     
     def root(self,*files) :
         return '%s/%s' % (self.basepath,'/'.join(files))
