@@ -1,9 +1,3 @@
-div#control_panel {
-    border-color: red;
-    border-width: 2px;
-    border-style: solid;
-}
-
 form#deformation_form {
     background-color: rgb(200,200,200);
     padding: 0.5em;

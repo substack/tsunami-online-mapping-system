@@ -48,6 +48,13 @@ def css(request,filename) :
         content_type=content_type(filename)
     )
 
+@get('/js/(?P<filename>.+)')
+def js(request,filename) :
+    return Response(
+        static_file(filename, root=app.root('js')),
+        content_type=content_type(filename)
+    )
+
 #@get('/data/jobs/(?P<job_id>)')
 #def jobs(request, job_id) :
 
