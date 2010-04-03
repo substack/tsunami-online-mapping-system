@@ -8,6 +8,10 @@ class DB(object) :
     def __init__(self,filename) :
         metadata.bind = 'sqlite:///%s' % filename
         metadata.bind.echo = True
+        self.filename = filename
+        
+        setup_all()
+        create_all()
 
 class Grid(Entity) :
     name = Column(String)
@@ -45,7 +49,7 @@ class NodeType(Entity) :
     
     def __init__(self,value=None) :
         ways = '4-way 16-way'.split()
-        if value not in ways.split() :
+        if value not in ways :
             raise 'Invalid node type "%s"\nValid types: %s' \
                 % (str(value), str(ways))
         self.value = value
