@@ -19,7 +19,14 @@ def deformations() :
     for href in [ str(x['href']) for x in links ] :
         name = '.'.join(href.split('.')[:-1])
         extents = map(float, urllib.urlopen(def_uri + href).read().split())
-        yield (name,extents)
+        params = map(float, urllib.urlopen(
+            '%s%s.param' % (def_uri, name)
+        ).read().split())
+        yield {
+            'name' : name,
+            'extents' : extents,
+            'params' : params,
+        }
 
 if __name__ == '__main__' :
     import sys, os
