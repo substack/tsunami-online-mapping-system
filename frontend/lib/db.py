@@ -14,6 +14,21 @@ def bind_db(filename) :
 
 class Grid(Entity) :
     name = Column(String)
+    points = OneToMany('GridPoint') # one grid for many points
+
+class GridPoint(Entity) :
+    longitude = Column(Float)
+    latitude = Column(Float)
+    grid = ManyToOne('Grid') # many points in one grid
+
+class Deformation(Entity) :
+    name = Column(String)
+    points = OneToMany('DeformationPoints') # one deformation for many points
+
+class DeformationPoints(Entity) :
+    longitude = Column(Float)
+    latitude = Column(Float)
+    deformation = ManyToOne('Deformation') # many points in one deformation
 
 class Scenario(Entity) :
     modeling_time = Column(Float) # hours
@@ -52,11 +67,3 @@ class NodeType(Entity) :
             raise 'Invalid node type "%s"\nValid types: %s' \
                 % (str(value), str(ways))
         self.value = value
-
-class Point(Entity) :
-    longitude = Column(Float)
-    latitude = Column(Float)
-    grid = ManyToOne('Grid') # many points in one grid
-
-class Deformation(Entity) :
-    name = Column(String)
