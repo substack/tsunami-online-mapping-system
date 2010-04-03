@@ -9,7 +9,7 @@ basepath = '%s/../' % os.path.abspath(
 )
 sys.path.append('%s/lib' % basepath)
 
-import db
+from db import *
 
 host = '0.0.0.0'
 port = 8081
@@ -42,7 +42,9 @@ app = None
 
 @get('/')
 def index(request) :
-    return app.render('index.html', deformations="foo bar baz".split())
+    return app.render('index.html',
+        deformations=[ d.name for d in Deformation.query.all() ],
+    )
 
 @get('/css/(?P<filename>.+)')
 def css(request,filename) :
@@ -67,4 +69,5 @@ def js(request,filename) :
 if __name__ == '__main__' :
     import sys, os
     app = TsunamiApp(basepath)
+    bind_db(app.root('data/tsunami.sqlite3'))
     app.run()

@@ -4,14 +4,13 @@ Column = (lambda *args, **kwargs :
     Field(*args, **(dict([('nullable',False)] + kwargs.items())))
 )
 
-class DB(object) :
-    def __init__(self,filename) :
-        metadata.bind = 'sqlite:///%s' % filename
-        metadata.bind.echo = True
-        self.filename = filename
-        
-        setup_all()
-        create_all()
+def bind_db(filename) :
+    metadata.bind = 'sqlite:///%s' % filename
+    metadata.bind.echo = True
+    
+    import os
+    setup_all()
+    if not os.path.exists(filename) : create_all()
 
 class Grid(Entity) :
     name = Column(String)
