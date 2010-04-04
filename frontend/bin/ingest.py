@@ -11,22 +11,42 @@ from db import *
 from server import *
 from BeautifulSoup import BeautifulSoup
 import re, urllib
+from functools import partial
 
-def deformations() :
-    def_uri = 'http://burn.giseis.alaska.edu/deformations/'
-    soup = BeautifulSoup(urllib.urlopen(def_uri).read())
-    links = soup.findAll('a', href=re.compile('\.extent$'))
-    for href in [ str(x['href']) for x in links ] :
-        name = '.'.join(href.split('.')[:-1])
-        extents = map(float, urllib.urlopen(def_uri + href).read().split())
-        params = map(float, urllib.urlopen(
-            '%s%s.param' % (def_uri, name)
-        ).read().split())
-        yield {
-            'name' : name,
-            'extents' : extents,
-            'params' : params,
-        }
+def ingest(uri, **kw) :
+    soup = BeautifulSoup(urllib.urlopen(uri).read())
+    keys = kw.keys()
+    cdefs = [ # candidate definitions gathered from the first key extension
+        '.'.join(str(link['href']).split('.')[:-1])
+        for link in soup.findAll('a', href=re.compile(r'\.%s$' % keys[0]))
+    ]
+    defs = [ # definitions have files for all the keys
+        d for d in cdefs if all(
+            soup.find('a', href='%s.%s' % (d,key))
+            for key in keys
+        )
+    ]
+    for d in defs : yield dict([('name',d)] + [(
+        key,
+        f(urllib.urlopen('%s%s.%s' % (uri,d,key)).read())
+    ) for (key,f) in kw.items()])
+
+deformations = ingest(
+    'http://burn.giseis.alaska.edu/deformations/',
+    extent=lambda s : map(float, s.split()),
+    param=lambda s : (lambda xs :
+        { 'type' : xs[0], 'params' : map(float,xs[1:]) }
+            if len(s.split()) == 9 else 
+        { 'type' : '', 'params' : map(float,xs) }
+    )(s.split()), # trick for where-style DRY
+)
+
+grids = ingest(
+    'http://burn.giseis.alaska.edu/deformations/',
+    extent=lambda s : map(float, s.split()),
+    mm=lambda s : map(float, s.split()),
+    parent=str,
+)
 
 if __name__ == '__main__' :
     import sys, os
