@@ -48,12 +48,30 @@ deformations = ingest(
 
 grids = ingest(
     'http://burn.giseis.alaska.edu/grids/',
-    extent=lambda s : map(float, s.split()),
+    extent=lambda s : list(chunkby(2,map(float,s.split()))),
     mm=lambda s : map(float, s.split()),
     parent=str,
 )
+
+from math import ceil
+def chunkby(n,xs) :
+    for i in range(0, int(ceil(float(len(xs)) / 2.0))) :
+        yield xs[i*n:(i+1)*n]
 
 if __name__ == '__main__' :
     import sys, os
     app = TsunamiApp(basepath)
     bind_db(app.root('data/tsunami.sqlite3'))
+
+def populate() :
+    for g in grids :
+        print(g['extent'])
+        mm = g['mm']
+        Grid(
+            box=Box(west=mm[0], east=mm[1], south=mm[2], north=mm[3]),
+            points=[
+                Point(latitude=lat, longitude=lon)
+                for (lat,lon) in g['extent']
+            ],
+        )
+    session.flush()
