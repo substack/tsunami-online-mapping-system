@@ -4,6 +4,7 @@
 module load matlab
 . /u1/uaf/nicolsky/.profile
 
+#handles process id
 function find_pid {
    ftmp=$1.ppid.tmp
    fout=$1.ppid
@@ -28,7 +29,7 @@ function find_pid {
    else
       find_pid $1
    fi
-}
+} #end find_pid
 
 map_dir=/export/burn/nicolsky/mapping
 
@@ -45,6 +46,7 @@ if [ -f monitor.busy ]; then
 else
    touch monitor.busy
    
+#copies all files based on their status(pending, removing...)
    scp burn.giseis.alaska.edu:/export/burn/nicolsky/mapping/*.pending   .   2>/dev/null
    scp burn.giseis.alaska.edu:/export/burn/nicolsky/mapping/*.removing  .   2>/dev/null
    scp burn.giseis.alaska.edu:/export/burn/nicolsky/mapping/*.pausing   .   2>/dev/null
@@ -69,7 +71,7 @@ else
    ./prepare_def.sh &
    
     
-
+#prepare a list of files in the various statuses
    pending_files=$(ls  *.pending  2>/dev/null)
    removing_files=$(ls *.removing 2>/dev/null)
    removed_files=$(ls  *.removed  2>/dev/null)
