@@ -26,23 +26,29 @@ def ingest(uri, **kw) :
             for key in keys
         )
     ]
-    for d in defs : yield dict([('name',d)] + [(
-        key,
-        f(urllib.urlopen('%s%s.%s' % (uri,d,key)).read())
-    ) for (key,f) in kw.items()])
+    for d in defs :
+        yield dict([('name',d)] + [(
+            key,
+            f(urllib.urlopen('%s%s.%s' % (uri,d,key)).read())
+        ) for (key,f) in kw.items()]
+    )
 
 deformations = ingest(
     'http://burn.giseis.alaska.edu/deformations/',
     extent=lambda s : map(float, s.split()),
-    param=lambda s : (lambda xs :
-        { 'type' : xs[0], 'params' : map(float,xs[1:]) }
-            if len(s.split()) == 9 else 
-        { 'type' : '', 'params' : map(float,xs) }
-    )(s.split()), # trick for where-style DRY
+    # trick for where-style DRY:
+    param=lambda s : [
+        (lambda xs :
+            { 'type' : '', 'params' : map(float,xs) }
+                if len(xs) == 9 else 
+            { 'type' : xs[0], 'params' : map(float,xs[1:]) }
+        )(line.split())
+        for line in s.splitlines()
+    ],
 )
 
 grids = ingest(
-    'http://burn.giseis.alaska.edu/deformations/',
+    'http://burn.giseis.alaska.edu/grids/',
     extent=lambda s : map(float, s.split()),
     mm=lambda s : map(float, s.split()),
     parent=str,
