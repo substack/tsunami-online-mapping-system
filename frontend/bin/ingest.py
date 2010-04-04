@@ -36,8 +36,7 @@ def ingest(uri, **kw) :
 deformations = ingest(
     'http://burn.giseis.alaska.edu/deformations/',
     extent=lambda s : map(float, s.split()),
-    # trick for where-style DRY:
-    param=lambda s : [
+    param=lambda s : [ # trick for where-style DRY:
         (lambda xs :
             { 'type' : '', 'params' : map(float,xs) }
                 if len(xs) == 9 else 

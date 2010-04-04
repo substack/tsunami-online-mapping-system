@@ -2,16 +2,14 @@ from model.util import *
 from model.point import *
 
 class Deformation(Entity) :
-    name = Column(String)
-    points = OneToMany('DeformationPoint') # one deformation for many points
-    extent = ManyToOne('Extent') # many deformations
-
-class DeformationPoint(Point) :
-    deformation = ManyToOne('Deformation') # many points in one deformation
-
-class Extent(Entity) :
-    west = Column(Float)
-    south = Column(Float)
-    east = Column(Float)
-    north = Column(Float)
-    deformations = OneToMany('Deformation')
+    name = Column(String, nullable=True)
+    extent = ManyToOne('Extent') # one extent for each deformation
+    # by order of appearance in .param files:
+    point = ManyToOne('Point') # lat/lon params
+    resolution = Column(Float) # looks like resolution in meters
+    max_value = Column(Float) # could be a maximum value of some sort
+    arcseconds = Column(Float) # complete guess on this one
+    x = Column(Float) # usually 15.0
+    y = Column(Float) # usually 90.0
+    easting = Column(Float) # possibly
+    northing = Column(Float) # possibly

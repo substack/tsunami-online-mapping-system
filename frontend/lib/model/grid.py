@@ -3,7 +3,5 @@ from model.point import *
 
 class Grid(Entity) :
     name = Column(String)
-    points = OneToMany('GridPoint') # one grid for many points
-
-class GridPoint(Point) :
-    grid = ManyToOne('Grid') # many points in one grid
+    extent = ManyToOne('Extent') # each grid has one deformation
+    parent = ManyToOne('Grid') # each grid may have one parent
