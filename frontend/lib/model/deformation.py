@@ -3,7 +3,7 @@ from model.point import *
 
 class Deformation(Entity) :
     name = Column(String, nullable=True)
-    extent = ManyToOne('Extent') # one extent for each deformation
+    box = ManyToOne('Box') # one bounding box for each deformation
     # by order of appearance in .param files:
     point = ManyToOne('Point') # lat/lon params
     resolution = Column(Float) # looks like resolution in meters

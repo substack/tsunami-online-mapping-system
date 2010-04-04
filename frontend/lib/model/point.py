@@ -4,7 +4,7 @@ class Point(Entity) :
     longitude = Column(Float)
     latitude = Column(Float)
 
-class Extent(Entity) :
+class Box(Entity) :
     west = Column(Float)
     south = Column(Float)
     east = Column(Float)
