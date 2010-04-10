@@ -9,9 +9,9 @@ class Scenario(Entity) :
     earth_radius = Column(Float) # meters
     earth_gravity = Column(Float) # m/(s*s)
     earth_rotation = Column(Float) # Hz
-    # each scenario has one grid and one deformation
+    # each scenario has one grid and one earthquake
     grid = ManyToOne('Grid')
-    deformation = ManyToOne('Deformation')
+    earthquake = ManyToOne('Deformation')
     # a scenario can be submitted multiple times potentially
     # when the processing fails for some reason
     jobs = OneToMany('Job')

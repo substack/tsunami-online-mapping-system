@@ -1,7 +1,7 @@
 from model.util import *
 from model.point import *
 
-class Earthquake(Entity) :
+class Deformation(Entity) :
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
     

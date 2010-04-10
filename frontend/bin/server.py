@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.6
 from itty import *
 from jinja2 import Environment, Template, FileSystemLoader
 
@@ -43,7 +43,7 @@ app = None
 @get('/')
 def index(request) :
     return app.render('index.html',
-        deformations=[ d.name for d in Deformation.query.all() ],
+        earthquakes=[ d.name for d in Earthquake.query.all() ],
     )
 
 @get('/css/(?P<filename>.+)')
