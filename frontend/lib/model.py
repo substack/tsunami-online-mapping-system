@@ -8,7 +8,6 @@ class Deformation(Entity) :
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
     grid = Column(String)
-    group = ManyToOne('Group')
     
     # by order of appearance in .param files:
     longitude = Column(Float) # longitude of quake
@@ -52,12 +51,16 @@ class Deformation(Entity) :
 
 class Group(Entity) :
     name = Column(String)
-    deformations = OneToMany('Deformation')
+    grids = OneToMany('Grid')
 
 class Grid(Entity) :
     name = Column(String)
+    description = Column(String, nullable=True)
+    group = ManyToOne('Group')
+    
     points = OneToMany('GridPoint') # each grid has many boundary points
     parent = ManyToOne('Grid') # each grid may have one parent
+    children = OneToMany('Grid') # and multiple children
     
     # bounding box
     west = Column(Float)

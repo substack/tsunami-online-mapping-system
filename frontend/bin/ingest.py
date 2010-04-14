@@ -50,7 +50,7 @@ grids = ingest(
     extent=lambda s : list(chunkby(2,map(float,s.split()))),
     mm=lambda s : map(float, s.split()),
     parent=lambda s : s.strip(),
-    readme=lambda s : s.splitlines()[0].split(', '),
+    readme=lambda s : re.split(r'\s*,\s*', s.splitlines()[0], 1)
 )
 
 from math import ceil
@@ -81,12 +81,20 @@ def populate_grids() :
         if session.query(Grid).filter(Grid.name == g['name']).count() > 0 :
             continue
         
+        print(g)
+        
+        group = None
+        if len(g['readme']) == 2 :
+            name = g['readme'][1]
+            try :
+                group = session.query(Group).filter(Group.name == name).first()
+            except OperationalError :
+                group = Group(name=name)
+        
         grid = Grid(
             name=g['name'],
             description=g['readme'][0],
-            group=Group(
-                name=g['readme'][1]
-            ),
+            group=group,
             points=[
                 GridPoint(latitude=lat, longitude=lon)
                 for (lat,lon) in g['extent']
