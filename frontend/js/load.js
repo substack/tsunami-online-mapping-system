@@ -10,21 +10,20 @@ google.setOnLoadCallback(function () {
     map.addControl(new google.maps.LargeMapControl());
     map.disableDoubleClickZoom();
     
-    var panel = $("#tabs");
-    panel.tabs({ idPrefix : 'tab' });
-    
-    $(window).resize(function () {
-        canvas.height(
-            $(window).height()
-            - panel.outerHeight()
-            - 16
-        );
-        canvas.width($(window).width() - 2);
-    });
-    $(window).resize();
+    var tabs = $("#tabs");
+    tabs.tabs({ idPrefix : 'tab' });
     
     canvas.resizable({
         handles : 's',
-        alsoResize : '#tabs'
+        resize : function (ev,ui) {
+            tabs.height($(window).height() - ui.size.height - 30)
+        }
     });
+    
+    $(window).resize(function () {
+        canvas.height(
+            $(window).height() - tabs.outerHeight() - 10
+        );
+    });
+    $(window).resize();
 });
