@@ -1,0 +1,18 @@
+BODY, P,TD{ font-family: Arial,Verdana,Helvetica, sans-serif; font-size: 10pt }
+A{font-family: Arial,Verdana,Helvetica, sans-serif;}
+B {	font-family : Arial, Helvetica, sans-serif;	font-size : 12px;	font-weight : bold;}
+.error_strings{ font-family:Verdana; font-size:10px; color:#660000;}
+table {width:100%}
+.tableWrapper {text-align:center}
+.tr0 {background-color:#ffffcc}
+.tr1 {background-color:#ccffcc}
+.colr {width:5%}
+.col0 {width:10%}
+.col1 {width:28%}
+.col2 {width:10%}
+.col3 {width:8%}
+.col4 {width:7%}
+.col5 {width:5%}
+.col6 {width:3%}
+.col7 {width:8%}
+.col8 {width:6%}
