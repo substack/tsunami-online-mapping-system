@@ -11,7 +11,6 @@ from db import *
 from server import *
 from BeautifulSoup import BeautifulSoup
 import re, urllib
-from functools import partial
 
 def ingest(uri, **kw) :
     soup = BeautifulSoup(urllib.urlopen(uri).read())
@@ -50,7 +49,8 @@ grids = ingest(
     'http://burn.giseis.alaska.edu/grids/',
     extent=lambda s : list(chunkby(2,map(float,s.split()))),
     mm=lambda s : map(float, s.split()),
-    parent=str,
+    parent=lambda s : s.strip(),
+    readme=lambda s : s.splitlines()[0].split(', '),
 )
 
 from math import ceil
@@ -63,15 +63,42 @@ if __name__ == '__main__' :
     app = TsunamiApp(basepath)
     bind_db(app.root('data/tsunami.sqlite3'))
 
-def populate() :
+def populate_grids() :
+    from sqlalchemy.exc import OperationalError
+    import time
+    dangling = []
     for g in grids :
-        print(g['extent'])
+        time.sleep(5.0)
+        
         mm = g['mm']
-        Grid(
-            box=Box(west=mm[0], east=mm[1], south=mm[2], north=mm[3]),
+        
+        parent = None
+        try :
+            parent = session.query(Grid).filter(Grid.name == g['parent']).first()
+        except OperationalError :
+            dangling.append((g['name'],g['parent']))
+        
+        if session.query(Grid).filter(Grid.name == g['name']).count() > 0 :
+            continue
+        
+        grid = Grid(
+            name=g['name'],
+            description=g['readme'][0],
+            group=Group(
+                name=g['readme'][1]
+            ),
             points=[
-                Point(latitude=lat, longitude=lon)
+                GridPoint(latitude=lat, longitude=lon)
                 for (lat,lon) in g['extent']
             ],
+            parent=parent,
+            west=mm[0], east=mm[1], south=mm[2], north=mm[3],
         )
+        session.add(grid)
+        session.commit()
+    
+    for (name,parent) in dangling :
+        session.query(Grid).filter(Grid.name == name).first() \
+            . parent = session.query(Grid).filter(Grid.name == parent).first()
+    
     session.flush()
