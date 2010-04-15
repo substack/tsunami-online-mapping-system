@@ -110,3 +110,33 @@ def populate_grids() :
             . parent = session.query(Grid).filter(Grid.name == parent).first()
     
     session.flush()
+
+def populate_deformations() :
+    from sqlalchemy.exc import OperationalError
+    import time
+    dangling = []
+    for d in deformations :
+        time.sleep(5.0)
+        extent = d['extent']
+        
+        for p in d['param'] :
+            print(p)
+            deformation = Deformation(
+                name=d['name'],
+                description='',
+                user=(p['type'] != ''),
+                # bounding box:
+                west=extent[1],
+                south=extent[2],
+                east=extent[0],
+                north=extent[3],
+                # deformation parameters:
+                **dict(zip("""
+                    longitude latitude depth
+                    strike dip rake
+                    slip length width
+                """.split(), p['params']))
+            )
+            session.add(deformation)
+        session.commit()
+    session.flush()
