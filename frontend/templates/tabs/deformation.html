@@ -1,5 +1,5 @@
 <form action="/create_scenario" method="post" id="deformation_form">
-    <table style="float: left">
+    <table>
         <tr>
             <th>
                 <label for="modeling_time">Modeling Time</label>
@@ -8,28 +8,6 @@
                 <input type="text" name="modeling_time" value="1.0">
                 hours
             </td>
-        </tr>
-        <tr>
-            <th>
-                <label for="time_step">Time Step</label>
-            </th>
-            <td>
-                <input type="text" name="time_step" value="1.0">
-                seconds
-            </td>
-        </tr>
-        <tr>
-            <th>
-                <label for="output_step">Output Step</label>
-            </th>
-            <td>
-                <input type="text" name="output_step" value="300.0">
-                seconds
-            </td>
-        </tr>
-    </table>
-    <table>
-        <tr>
             <th>
                 <label for="deformations">Deformation Model</label>
             </th>
@@ -43,6 +21,13 @@
         </tr>
         <tr>
             <th>
+                <label for="time_step">Time Step</label>
+            </th>
+            <td>
+                <input type="text" name="time_step" value="1.0">
+                seconds
+            </td>
+            <th>
                 <label for="bottom_friction">Bottom Friction</label>
             </th>
             <td>
@@ -50,6 +35,13 @@
             </td>
         </tr>
         <tr>
+            <th>
+                <label for="output_step">Output Step</label>
+            </th>
+            <td>
+                <input type="text" name="output_step" value="300.0">
+                seconds
+            </td>
             <th>
                 <label for="sea_level">Sea Level</label>
             </th>
