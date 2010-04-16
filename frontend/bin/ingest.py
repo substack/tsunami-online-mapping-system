@@ -66,7 +66,7 @@ markers = ingest_builder(
         re.split(r'\s*,\s*',
             re.sub(r'"','',
                 re.sub(r'^.+?\(\s*|\s*\).*','',x)
-            )
+            ), 5
         ) for x in js.splitlines() if re.search(r'^\s+nm\[\d+\]', x)
     ],
 )
@@ -157,4 +157,24 @@ def ingest_deformations() :
             )
             session.add(deformation)
         session.commit()
+    session.flush()
+
+def ingest_markers() :
+    import time
+    for m in markers :
+        for params in m['js'] :
+            print(params)
+            lon, lat = map(float, params[:2])
+            name, grid, group, desc = params[2:]
+            g = session.query(Grid).filter(Grid.name == grid).first()
+            marker = Marker(
+                name=name,
+                description=desc,
+                grid=g,
+                longitude=lon,
+                latitude=lat,
+            )
+            session.add(marker)
+        session.commit()
+        time.sleep(5.0)
     session.flush()

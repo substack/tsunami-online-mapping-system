@@ -64,9 +64,10 @@ class Grid(Entity) :
     description = Column(String, nullable=True)
     group = ManyToOne('Group')
     
-    points = OneToMany('GridPoint') # each grid has many boundary points
-    parent = ManyToOne('Grid') # each grid may have one parent
-    children = OneToMany('Grid') # and multiple children
+    points = OneToMany('GridPoint') # has many boundary points
+    parent = ManyToOne('Grid') # has one parent
+    children = OneToMany('Grid') # has many children
+    markers = OneToMany('Marker') # has many markers
     
     # bounding box
     west = Column(Float)
@@ -75,6 +76,13 @@ class Grid(Entity) :
     north = Column(Float)
 
 class GridPoint(Entity) :
+    grid = ManyToOne('Grid')
+    longitude = Column(Float)
+    latitude = Column(Float)
+
+class Marker(Entity) :
+    name = Column(String)
+    description = Column(String, nullable=True)
     grid = ManyToOne('Grid')
     longitude = Column(Float)
     latitude = Column(Float)
