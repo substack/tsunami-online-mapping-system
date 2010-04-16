@@ -7,7 +7,13 @@ Column = (lambda *args, **kwargs :
 class Deformation(Entity) :
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
-    grid = Column(String)
+    user = Column(Boolean)
+    
+    # bounding box in degrees from .extent files:
+    west = Column(Float)
+    south = Column(Float)
+    east = Column(Float)
+    north = Column(Float)
     
     # by order of appearance in .param files:
     longitude = Column(Float) # longitude of quake
