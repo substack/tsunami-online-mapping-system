@@ -88,6 +88,12 @@ def old_page(request) :
 
 import simplejson as js
 
+#NOTE: uncomment this when implimenting the status update
+#JOB (status update)
+#@get('data/job/status')
+#def status(request, status) :
+#    return Job.json(Job.query.filter_by(status=status).first())
+
 # markers
 @get('/data/markers')
 def markers(request) :

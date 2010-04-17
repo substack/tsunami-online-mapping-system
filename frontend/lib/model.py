@@ -123,7 +123,7 @@ class Job(Entity,JSON) :
     start_time = Column(Integer, nullable=True)
     progress = Column(Float)
 
-class NodeType(Entity) :
+class NodeType(Entity,JSON) :
     __tablename__ = 'node_types'
     value = Column(String)
     
@@ -134,7 +134,7 @@ class NodeType(Entity) :
                 % (str(value), str(ways))
         self.value = value
 
-class Scenario(Entity) :
+class Scenario(Entity,JSON) :
     __tablename__ = 'scenarios'
     modeling_time = Column(Float) # hours
     time_step = Column(Float) # seconds
