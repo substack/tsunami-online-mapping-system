@@ -16,9 +16,17 @@ google.setOnLoadCallback(function () {
     canvas.resizable({
         handles : 's',
         resize : function (ev,ui) {
-            tabs.height($(window).height() - ui.size.height - 30)
+            tabs.height($(window).height() - ui.size.height - 30);
+            $("#markers-tab").height(
+                tabs.height() - $("#tabs-bar").height()
+            );
         }
     });
+    
+    tabs.height($(window).height() - canvas.height - 30);
+    $("#markers-tab").height(
+        tabs.height() - $("#tabs-bar").height() - 15
+    );
     
     $(window).resize(function () {
         canvas.height(
@@ -26,4 +34,46 @@ google.setOnLoadCallback(function () {
         );
     });
     $(window).resize();
+    
+    deformations.each(function (name,def) {
+        $("select#deformations").append(
+            $(document.createElement("option"))
+                .attr("value", name)
+                .text(name)
+        );
+    });
+    
+    $("select#deformations").change(function () {
+        var name = $(this).attr("value");
+        var def = deformations.get(name);
+        var wsen = "west south east north".split(" ").map(def.get)
+            .map(function (x) {
+                while (x > 180) x -= 360;
+                while (x < -180) x += 360;
+                return x;
+            });
+        var w = -wsen[0]; var s = wsen[1]; var e = -wsen[2]; var n = wsen[3];
+        
+        map.clearOverlays();
+        map.addOverlay(new google.maps.GroundOverlay(
+            "/overlays/" + name + ".png",
+            new google.maps.LatLngBounds(
+                new google.maps.LatLng(s,w),
+                new google.maps.LatLng(n,e)
+            )
+        ));
+    });
+    
+    groups.each(function (name,group) {
+        $("#markers-tab").append(
+            $(document.createElement("div"))
+                .addClass("marker")
+                .append($(document.createElement("input"))
+                    .attr("type", "checkbox")
+                    .attr("value", name)
+                )
+                .append($(document.createTextNode(name)))
+            )
+        ;
+    });
 });
