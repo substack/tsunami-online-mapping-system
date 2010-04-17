@@ -16,9 +16,17 @@ google.setOnLoadCallback(function () {
     canvas.resizable({
         handles : 's',
         resize : function (ev,ui) {
-            tabs.height($(window).height() - ui.size.height - 30)
+            tabs.height($(window).height() - ui.size.height - 30);
+            $("#markers-tab").height(
+                tabs.height() - $("#tabs-bar").height()
+            );
         }
     });
+    
+    tabs.height($(window).height() - canvas.height - 30);
+    $("#markers-tab").height(
+        tabs.height() - $("#tabs-bar").height() - 15
+    );
     
     $(window).resize(function () {
         canvas.height(
@@ -54,5 +62,18 @@ google.setOnLoadCallback(function () {
                 new google.maps.LatLng(n,e)
             )
         ));
+    });
+    
+    groups.each(function (name,group) {
+        $("#markers-tab").append(
+            $(document.createElement("div"))
+                .addClass("marker")
+                .append($(document.createElement("input"))
+                    .attr("type", "checkbox")
+                    .attr("value", name)
+                )
+                .append($(document.createTextNode(name)))
+            )
+        ;
     });
 });

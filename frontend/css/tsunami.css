@@ -10,6 +10,10 @@ div#map_canvas {
     margin-left: -0.5em;
 }
 
+div#tabs {
+    height: 13em;
+}
+
 div#tabs div {
     padding: 0em;
 }
@@ -42,4 +46,21 @@ div#tabs form table tr td {
 
 div#tabs form table tr td input[type="text"] {
     width: 5em;
+}
+
+div.marker {
+    background-color: rgb(255,255,220);
+}
+
+div.marker-selected {
+    background-color: rgb(220,255,220);
+}
+
+div.marker-active {
+    background-color: rgb(255,220,220);
+}
+
+#markers-tab {
+    overflow-y: scroll;
+    height: 100px
 }
