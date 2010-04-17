@@ -13,18 +13,9 @@
         type="text/css"
     >
     <link rel="stylesheet" type="text/css" href="/css/tsunami.css">
-    <script
-        type="text/javascript"
-        src="http://www.google.com/jsapi?key=ABQIAAAAG07sBB-qC9yaNXELGJpf5BRrbJnNmETF966luGlbSTr_RfkmQBR_r9lzzhGueAMWoH_XbKNIdXA-uw"
-    ></script>
-    <script
-        type="text/javascript"
-        src="/js/load.js"
-    ></script>
-    <script
-        type="text/javascript"
-        src="http://burn.giseis.alaska.edu/scripts/list_Cordova.js"
-    ></script>
+    {% block scripts %}
+        {% include "scripts.html" %}
+    {% endblock %}
 </head>
 <body>
     {% block content %}

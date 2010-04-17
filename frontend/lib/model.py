@@ -71,7 +71,7 @@ class Deformation(Entity,JSON) :
             self.width,
         ])
 
-class Group(Entity) :
+class Group(Entity,JSON) :
     __tablename__ = 'groups'
     name = Column(String)
     markers = OneToMany('Marker')

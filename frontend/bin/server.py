@@ -42,7 +42,12 @@ app = None
 
 @get('/')
 def index(request) :
-    return app.render('index.html')
+    return app.render('index.html',
+        json=dict(zip(
+            'deformations markers groups grids points'.split(),
+            [ x.json() for x in [Deformation,Marker,Group,Grid,Point] ]
+        ))
+    )
 
 @get('/css/(?P<filename>.+)')
 def css(request,filename) :
