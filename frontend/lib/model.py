@@ -57,12 +57,11 @@ class Deformation(Entity) :
 
 class Group(Entity) :
     name = Column(String)
-    grids = OneToMany('Grid')
+    markers = OneToMany('Marker')
 
 class Grid(Entity) :
     name = Column(String)
     description = Column(String, nullable=True)
-    group = ManyToOne('Group')
     
     points = OneToMany('GridPoint') # has many boundary points
     parent = ManyToOne('Grid') # has one parent
@@ -84,6 +83,7 @@ class Marker(Entity) :
     name = Column(String)
     description = Column(String, nullable=True)
     grid = ManyToOne('Grid')
+    group = ManyToOne('Group')
     longitude = Column(Float)
     latitude = Column(Float)
 

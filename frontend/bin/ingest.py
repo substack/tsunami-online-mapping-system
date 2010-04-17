@@ -92,27 +92,18 @@ def ingest_grids() :
         
         parent = None
         try :
-            parent = session.query(Grid).filter(Grid.name == g['parent']).first()
+            parent = session.query(Grid).filter_by(name=g['parent']).first()
         except OperationalError :
             dangling.append((g['name'],g['parent']))
         
-        if session.query(Grid).filter(Grid.name == g['name']).count() > 0 :
+        if session.query(Grid).filter_by(name=g['name']).count() > 0 :
             continue
         
         print(g)
         
-        group = None
-        if len(g['readme']) == 2 :
-            name = g['readme'][1]
-            try :
-                group = session.query(Group).filter(Group.name == name).first()
-            except OperationalError :
-                group = Group(name=name)
-        
         grid = Grid(
             name=g['name'],
             description=g['readme'][0],
-            group=group,
             points=[
                 GridPoint(latitude=lat, longitude=lon)
                 for (lat,lon) in g['extent']
@@ -124,8 +115,8 @@ def ingest_grids() :
         session.commit()
     
     for (name,parent) in dangling :
-        session.query(Grid).filter(Grid.name == name).first() \
-            . parent = session.query(Grid).filter(Grid.name == parent).first()
+        session.query(Grid).filter_by(name=name).first() \
+            . parent = session.query(Grid).filter_by(name=parent).first()
     
     session.flush()
 
@@ -165,12 +156,17 @@ def ingest_markers() :
         for params in m['js'] :
             print(params)
             lon, lat = map(float, params[:2])
-            name, grid, group, desc = params[2:]
-            g = session.query(Grid).filter(Grid.name == grid).first()
+            name, grid_name, group_name, desc = params[2:]
+            
+            group = session.query(Group).filter_by(name=group_name).first()
+            if not group : group = Group(name=group_name)
+            grid = session.query(Grid).filter_by(name=grid_name).first()
+            
             marker = Marker(
                 name=name,
                 description=desc,
-                grid=g,
+                grid=grid,
+                group=group,
                 longitude=lon,
                 latitude=lat,
             )
