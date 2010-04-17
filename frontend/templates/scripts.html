@@ -1,0 +1,25 @@
+<script
+    type="text/javascript"
+    src="http://www.google.com/jsapi?key=ABQIAAAAG07sBB-qC9yaNXELGJpf5BRrbJnNmETF966luGlbSTr_RfkmQBR_r9lzzhGueAMWoH_XbKNIdXA-uw"
+></script>
+<script type="text/javascript">
+    // pivot on the name keys of these lists of hashes
+    function pivot (rows) {
+        var hash = {};
+        for (var i in rows) {
+            var row = rows[i];
+            hash[row.name] = row;
+        }
+        return hash;
+    }
+    
+    var deformations = pivot({{ json.deformations }});
+    var markers = pivot({{ json.markers }});
+    var groups = pivot({{ json.groups }});
+    var grids = pivot({{ json.grids }});
+    var points = pivot({{ json.points }});
+</script>
+<script
+    type="text/javascript"
+    src="/js/load.js"
+></script>

@@ -11,21 +11,26 @@ from db import *
 from server import *
 from BeautifulSoup import BeautifulSoup
 import re, urllib
-from functools import partial
 
-def ingest(uri, **kw) :
+def ingest_builder(uri, pattern=None, **kw) :
     soup = BeautifulSoup(urllib.urlopen(uri).read())
     keys = kw.keys()
-    cdefs = [ # candidate definitions gathered from the first key extension
-        '.'.join(str(link['href']).split('.')[:-1])
-        for link in soup.findAll('a', href=re.compile(r'\.%s$' % keys[0]))
-    ]
-    defs = [ # definitions have files for all the keys
-        d for d in cdefs if all(
-            soup.find('a', href='%s.%s' % (d,key))
-            for key in keys
-        )
-    ]
+    if pattern is None :
+        cdefs = [ # candidate definitions gathered from the first key extension
+            '.'.join(str(link['href']).split('.')[:-1])
+            for link in soup.findAll('a', href=re.compile(r'\.%s$' % keys[0]))
+        ]
+        defs = [ # definitions have files for all the keys
+            d for d in cdefs if all(
+                soup.find('a', href='%s.%s' % (d,key))
+                for key in keys
+            )
+        ]
+    else :
+        defs = [
+            '.'.join(str(link['href']).split('.')[:-1])
+            for link in soup.findAll('a', href=pattern)
+        ]
     for d in defs :
         yield dict([('name',d)] + [(
             key,
@@ -33,7 +38,7 @@ def ingest(uri, **kw) :
         ) for (key,f) in kw.items()]
     )
 
-deformations = ingest(
+deformations = ingest_builder(
     'http://burn.giseis.alaska.edu/deformations/',
     extent=lambda s : map(float, s.split()),
     param=lambda s : [ # trick for where-style DRY:
@@ -46,11 +51,24 @@ deformations = ingest(
     ],
 )
 
-grids = ingest(
+grids = ingest_builder(
     'http://burn.giseis.alaska.edu/grids/',
     extent=lambda s : list(chunkby(2,map(float,s.split()))),
     mm=lambda s : map(float, s.split()),
-    parent=str,
+    parent=lambda s : s.strip(),
+    readme=lambda s : re.split(r'\s*,\s*', s.splitlines()[0], 1)
+)
+
+markers = ingest_builder(
+    'http://burn.giseis.alaska.edu/scripts/',
+    pattern=re.compile(r'^list_.+\.js$'),
+    js=lambda js : [
+        re.split(r'\s*,\s*',
+            re.sub(r'"','',
+                re.sub(r'^.+?\(\s*|\s*\).*','',x)
+            ), 5
+        ) for x in js.splitlines() if re.search(r'^\s+nm\[\d+\]', x)
+    ],
 )
 
 from math import ceil
@@ -58,20 +76,111 @@ def chunkby(n,xs) :
     for i in range(0, int(ceil(float(len(xs)) / 2.0))) :
         yield xs[i*n:(i+1)*n]
 
-if __name__ == '__main__' :
-    import sys, os
-    app = TsunamiApp(basepath)
-    bind_db(app.root('data/tsunami.sqlite3'))
-
-def populate() :
+def ingest_grids() :
+    from sqlalchemy.exc import OperationalError
+    import time
+    dangling = []
     for g in grids :
-        print(g['extent'])
+        time.sleep(5.0)
+        
         mm = g['mm']
-        Grid(
-            box=Box(west=mm[0], east=mm[1], south=mm[2], north=mm[3]),
+        
+        parent = None
+        try :
+            parent = session.query(Grid).filter_by(name=g['parent']).first()
+        except OperationalError :
+            dangling.append((g['name'],g['parent']))
+        
+        if session.query(Grid).filter_by(name=g['name']).count() > 0 :
+            continue
+        
+        print(g)
+        
+        grid = Grid(
+            name=g['name'],
+            description=g['readme'][0],
             points=[
                 Point(latitude=lat, longitude=lon)
                 for (lat,lon) in g['extent']
             ],
+            parent=parent,
+            west=mm[0], east=mm[1], south=mm[2], north=mm[3],
         )
+        session.add(grid)
+        session.commit()
+    
+    for (name,parent) in dangling :
+        session.query(Grid).filter_by(name=name).first() \
+            . parent = session.query(Grid).filter_by(name=parent).first()
+    
     session.flush()
+
+def ingest_deformations() :
+    from sqlalchemy.exc import OperationalError
+    import time
+    dangling = []
+    for d in deformations :
+        time.sleep(5.0)
+        extent = d['extent']
+        
+        for p in d['param'] :
+            print(p)
+            deformation = Deformation(
+                name=d['name'],
+                description='',
+                user=(p['type'] != ''),
+                # bounding box:
+                west=extent[1],
+                south=extent[2],
+                east=extent[0],
+                north=extent[3],
+                # deformation parameters:
+                **dict(zip("""
+                    longitude latitude depth
+                    strike dip rake
+                    slip length width
+                """.split(), p['params']))
+            )
+            session.add(deformation)
+        session.commit()
+    session.flush()
+
+def ingest_markers() :
+    import time
+    for m in markers :
+        for params in m['js'] :
+            print(params)
+            lon, lat = map(float, params[:2])
+            name, grid_name, group_name, desc = params[2:]
+            
+            group = session.query(Group).filter_by(name=group_name).first()
+            if not group : group = Group(name=group_name)
+            grid = session.query(Grid).filter_by(name=grid_name).first()
+            
+            marker = Marker(
+                name=name,
+                description=desc,
+                grid=grid,
+                group=group,
+                longitude=lon,
+                latitude=lat,
+            )
+            session.add(marker)
+        session.commit()
+        time.sleep(5.0)
+    session.flush()
+
+def ingest() :
+    ingest_grids()
+    ingest_deformations()
+    ingest_markers()
+    print(
+        'Ingest complete:\n    %d grids, %d deformations, %d markers, %d groups'
+        % tuple(x.query.count() for x in [Grid,Deformation,Marker,Group])
+    )
+
+if __name__ == '__main__' :
+    import sys, os
+    app = TsunamiApp(basepath)
+    bind_db(app.root('data/tsunami.sqlite3'))
+    ingest()

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" href="/css/oldstyle.css">
+<title>ATOM workload</title>
+<script
+    src="http://burn.giseis.alaska.edu/scripts/sprintf.js"
+    type="text/javascript"
+></script>
+<script
+    type="text/javascript"
+    src="/js/oldscript.js"
+></script>
+<script>
+function load() {
+    counter=0;
+    {% for job in jobs %}
+        addScenario({
+            id : job.id,
+            name : job.name,
+            status : job.status,
+            completed : job.completed,
+            t : job.t
+        });
+    {% endfor %}
+
+  var l=updateMarkerTable();
+  updagePages(l);
+  setTimeout("window.location.reload();",60000);
+}
+</script>
+</head>
+<body>
+
+<div style="width:800px;background-color:#eeeeee">
+
+<form name="points">
+    <div>
+        <input type="button" value="Archive to" onclick="Archive();" />
+        <select id="select_folder">
+           <option selected>select community</option>
+           <option value="Seward">Seward</option>
+           <option value="Sitka">Sitka</option>
+           <option value="PWS">Prince William Sound</option>
+           <option value="Unalaska">Unalaska</option>
+           <option value="Kodiak">Kodiak</option>
+        </select>
+    </div>
+    <div style="float: right">
+        <input type="button" value="Previous Page" onclick="listPages(-1)" />
+        <select id="select_page" onchange='display_p=this.value;updateMarkerTable();'>
+        </select>
+        <input type="button" value="Next Page" onclick="listPages(1);" />
+    </div>
+    <tr>
+        <td> 
+            <div class="tableWrapper" style="width:800px;background-color:#99eeee">
+               <th></th><th><a href="javascript:set_sorting(1)">Case ID<img id="DR1" border="0" src="http://burn.giseis.alaska.edu/ico_sortDown.gif" /> </a></th>
+               <th><a href="javascript:set_sorting(2)">Name  <img id="DR2" border="0" src=""/> </a></th>
+               <th><a href="javascript:set_sorting(3)">Status <img id="DR3" border="0" src=""/> </a></th>
+               <th><a href="javascript:set_sorting(4)">Completed <img id="DR4" border="0" src=""/> </a></th>
+               <th>Time</th>
+               <th>#N</th>
+               <th>N-type</th>
+               <th>By</th>
+               <th>Size,Gb</th>
+            </tr>
+         </thead>
+         <tbody id="myTbody">
+         </tbody>
+      </table>
+      </div>
+   </td></tr> 
+   <tr><td>
+      <div style="width:800px;height:3px;background-color:#9999ee">
+      </div>
+   </td></tr>
+   <tr><td> 
+      <table cellspacing="0" cellpadding="0" border="0">   
+         <tr>   
+            <td align="left">  
+                               <input type="button" value="Select All" onclick="SelectAll();" /> 
+                               <input type="button" value="Deselect All" onclick="DeselectAll();" />  
+            </td>  
+            <td align="right">  
+                               <input type="button" value="Preview" onclick="Preview();var l=updateMarkerTable();updagePages(l);" />
+                               <input type="button" value="Remove" onclick="Remove();var l=updateMarkerTable();updagePages(l);" />
+                               <input type="button" value="Pause" onclick="Pause();var l=updateMarkerTable();updagePages(l);" />
+                               <input type="button" value="Continue" onclick="Continue();var l=updateMarkerTable();updagePages(l);" />
+            </td>  
+         </tr>
+      </table> 
+   </td></tr>
+</table>
+</FORM>
+
+
+</div>
+<FONT COLOR="RED"><b>
+{{ cron_frequency | e }} minutes
+</b>
+</FONT>
+<br /><br />
+<div style="width:400px;background-color:#eeeeee">
+<b>Currently available Midnight nodes:</b><hr/>
+<table cellspacing="2" cellpadding="2" border="0">
+<tr><th align="left">Nodes</th><th align="left">Standard</th><th align="left">Debug</th></tr>
+{{ current_nodes | e }}
+</table>
+
+<p><b>Currently available Burn storage:</b></p>
+<table cellspacing="2" cellpadding="2" border="0">
+    <tr>
+        <th align="left">Used (Gbytes)</th>
+        <th align="left">Available (Gbytes)</th>
+    </tr>
+    <tr>
+        <td>{{ storage.used | e }}</td>
+        <td>{{ storage.available | e }}</td>
+    </tr>
+</table>
+
+</div>
+<br />
+Set the <a href="/cgi-bin/priv/cron_low.cgi">Low</a>/<a href="/cgi-bin/priv/cron_high.cgi">High</a> update rate.
+  </body>
+</html>

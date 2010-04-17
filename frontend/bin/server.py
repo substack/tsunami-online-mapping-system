@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.6
 from itty import *
 from jinja2 import Environment, Template, FileSystemLoader
 
@@ -43,7 +43,10 @@ app = None
 @get('/')
 def index(request) :
     return app.render('index.html',
-        deformations=[ d.name for d in Deformation.query.all() ],
+        json=dict(zip(
+            'deformations markers groups grids points'.split(),
+            [ x.json() for x in [Deformation,Marker,Group,Grid,Point] ]
+        ))
     )
 
 @get('/css/(?P<filename>.+)')
@@ -60,11 +63,67 @@ def js(request,filename) :
         content_type=content_type(filename)
     )
 
-#@get('/data/jobs/(?P<job_id>)')
-#def jobs(request, job_id) :
+@get('/old_page')
+def old_page(request) :
+    return app.render('old_page.html',
+        # previously from /usr/local/apachedev/htdocs/mapping/status
+        # cat $file | awk -F',' '{printf "\
+        # addScenario(\"%s\",\"%s\",\"%s\",%f,\"%s\");\n", $1, $2, $3, $4, $5 }'
+        jobs=[],
+        pending_jobs=[], # keys: cputime, reqtime, nodes, nodetype, qtype, qt
+        cron_frequency=15, # in minutes
+        # /usr/local/apachedev/htdocs/mapping/current_nodes
+        current_nodes=30, # available midnight nodes
+        # df -k | grep /dev/dsk/c2d0s7 | awk '{print $3/1000000}' # used
+        # df -k | grep /dev/dsk/c2d0s7 | awk '{print $4/1000000}' # avail
+        storage={ 'used' : 100, 'available' : 50 } # gigabytes
+    )
 
-#@get('/data/jobs')
-#def jobs(request) :
+import simplejson as js
+
+# markers
+@get('/data/markers')
+def markers(request) :
+    return Marker.json()
+@get('/data/markers/names')
+def marker_names(request) :
+    return js.dumps([ x[0] for x in session.query(Marker.name).all() ])
+@get('/data/markers/name/(?P<name>.+)')
+def marker_from_name(request, name) :
+    return Marker.json(Marker.query.filter_by(name=name).first())
+
+# deformations
+@get('/data/deformations')
+def deformations(request) :
+    return Deformation.json()
+@get('/data/deformations/names')
+def deformation_names(request) :
+    return js.dumps([ x[0] for x in session.query(Deformation.name).all() ])
+@get('/data/deformations/name/(?P<name>.+)')
+def deformation_from_name(request, name) :
+    return Deformation.json(Deformation.query.filter_by(name=name).first())
+
+# grids
+@get('/data/grids')
+def grids(request) :
+    return Grid.json()
+@get('/data/grids/names')
+def grid_names(request) :
+    return js.dumps([ x[0] for x in session.query(Grid.name).all() ])
+@get('/data/grids/name/(?P<name>.+)')
+def grid_from_name(request, name) :
+    return Grid.json(Grid.query.filter_by(name=name).first())
+
+# points
+@get('/data/points')
+def points(request) :
+    return Point.json()
+@get('/data/points/names')
+def point_names(request) :
+    return js.dumps([ x[0] for x in session.query(Point.name).all() ])
+@get('/data/points/name/(?P<name>.+)')
+def point_from_name(request, name) :
+    return Point.json(Point.query.filter_by(name=name).first())
 
 if __name__ == '__main__' :
     import sys, os

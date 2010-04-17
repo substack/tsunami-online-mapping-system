@@ -1,16 +1,24 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-    <head>
-        <title>
-            {% block title %}
-                Alaska Tsunami Inundation Mapping Project
-            {% endblock %}
-        </title>
-        <link rel="stylesheet" type="text/css" href="/css/tsunami.css">
-    </head>
-    <body>
-        {% block content %}
+<head>
+    <title>
+        {% block title %}
+            Alaska Tsunami Inundation Mapping Project
         {% endblock %}
-    </body>
+    </title>
+    <link
+        href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"
+        rel="stylesheet"
+        type="text/css"
+    >
+    <link rel="stylesheet" type="text/css" href="/css/tsunami.css">
+    {% block scripts %}
+        {% include "scripts.html" %}
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    {% endblock %}
+</body>
 </html>
