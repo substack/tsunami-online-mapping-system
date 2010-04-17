@@ -19,7 +19,7 @@ class JSON(object) :
                 for row in rows
             ])
 
-class Deformation(Entity) :
+class Deformation(Entity,JSON) :
     __tablename__ = 'deformations'
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
@@ -76,7 +76,7 @@ class Group(Entity) :
     name = Column(String)
     markers = OneToMany('Marker')
 
-class Grid(Entity) :
+class Grid(Entity,JSON) :
     __tablename__ = 'grids'
     name = Column(String)
     description = Column(String, nullable=True)
@@ -92,7 +92,7 @@ class Grid(Entity) :
     east = Column(Float)
     north = Column(Float)
 
-class Point(Entity) :
+class Point(Entity,JSON) :
     __tablename__ = 'points'
     grid = ManyToOne('Grid')
     longitude = Column(Float)

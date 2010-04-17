@@ -76,29 +76,49 @@ def old_page(request) :
 
 import simplejson as js
 
+# markers
 @get('/data/markers')
 def markers(request) :
     return Marker.json()
-
 @get('/data/markers/names')
 def marker_names(request) :
     return js.dumps([ x[0] for x in session.query(Marker.name).all() ])
-
 @get('/data/markers/name/(?P<name>.+)')
 def marker_from_name(request, name) :
     return Marker.json(Marker.query.filter_by(name=name).first())
 
+# deformations
 @get('/data/deformations')
 def deformations(request) :
     return Deformation.json()
-
 @get('/data/deformations/names')
-def marker_names(request) :
+def deformation_names(request) :
     return js.dumps([ x[0] for x in session.query(Deformation.name).all() ])
-
 @get('/data/deformations/name/(?P<name>.+)')
-def marker_from_name(request, name) :
+def deformation_from_name(request, name) :
     return Deformation.json(Deformation.query.filter_by(name=name).first())
+
+# grids
+@get('/data/grids')
+def grids(request) :
+    return Grid.json()
+@get('/data/grids/names')
+def grid_names(request) :
+    return js.dumps([ x[0] for x in session.query(Grid.name).all() ])
+@get('/data/grids/name/(?P<name>.+)')
+def grid_from_name(request, name) :
+    return Grid.json(Grid.query.filter_by(name=name).first())
+
+# points
+@get('/data/points')
+def points(request) :
+    return Point.json()
+@get('/data/points/names')
+def point_names(request) :
+    return js.dumps([ x[0] for x in session.query(Point.name).all() ])
+@get('/data/points/name/(?P<name>.+)')
+def point_from_name(request, name) :
+    return Point.json(Point.query.filter_by(name=name).first())
 
 if __name__ == '__main__' :
     import sys, os
