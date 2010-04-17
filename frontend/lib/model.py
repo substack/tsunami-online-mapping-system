@@ -109,18 +109,19 @@ class Marker(Entity,JSON) :
     longitude = Column(Float)
     latitude = Column(Float)
  
-class Job(Entity) :
+class Job(Entity,JSON) :
     __tablename__ = 'jobs'
     # a scenario may have many jobs in the case where the job fails
     scenario = ManyToOne('Scenario')
-    
-    status = Column(String) # pending running complete failed
     person = Column(String) # the "Investigator" of the senario
     name = Column(String)
-    cputime = Column(Integer)
     nodes = Column(Integer)
     node_type = ManyToOne('NodeType')
     qtype = Column(String) # Queue type
+    # columns updated by the backend:
+    status = Column(String) # pending running complete failed
+    start_time = Column(Integer, nullable=True)
+    progress = Column(Float)
 
 class NodeType(Entity) :
     __tablename__ = 'node_types'
