@@ -76,11 +76,6 @@ def chunkby(n,xs) :
     for i in range(0, int(ceil(float(len(xs)) / 2.0))) :
         yield xs[i*n:(i+1)*n]
 
-if __name__ == '__main__' :
-    import sys, os
-    app = TsunamiApp(basepath)
-    bind_db(app.root('data/tsunami.sqlite3'))
-
 def ingest_grids() :
     from sqlalchemy.exc import OperationalError
     import time
@@ -105,7 +100,7 @@ def ingest_grids() :
             name=g['name'],
             description=g['readme'][0],
             points=[
-                GridPoint(latitude=lat, longitude=lon)
+                Point(latitude=lat, longitude=lon)
                 for (lat,lon) in g['extent']
             ],
             parent=parent,
@@ -174,3 +169,18 @@ def ingest_markers() :
         session.commit()
         time.sleep(5.0)
     session.flush()
+
+def ingest() :
+    ingest_grids()
+    ingest_deformations()
+    ingest_markers()
+    print(
+        'Ingest complete:\n    %d grids, %d deformations, %d markers, %d groups'
+        % tuple(x.query.count() for x in [Grid,Deformation,Marker,Group])
+    )
+
+if __name__ == '__main__' :
+    import sys, os
+    app = TsunamiApp(basepath)
+    bind_db(app.root('data/tsunami.sqlite3'))
+    ingest()

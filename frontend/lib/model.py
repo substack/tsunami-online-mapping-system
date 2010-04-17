@@ -4,7 +4,23 @@ Column = (lambda *args, **kwargs :
     Field(*args, **(dict([('nullable',False)] + kwargs.items())))
 )
 
+import simplejson as js
+class JSON(object) : 
+    @classmethod
+    def json(cself, rows=None) :
+        if rows is None : rows = cself.query.all()
+        if not hasattr(rows, '__iter__') :
+            return js.dumps(
+                dict((k,getattr(rows,k)) for k in cself.table.columns.keys())
+            )
+        else :
+            return js.dumps([
+                dict((k,getattr(row,k)) for k in cself.table.columns.keys())
+                for row in rows
+            ])
+
 class Deformation(Entity) :
+    __tablename__ = 'deformations'
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
     user = Column(Boolean)
@@ -56,14 +72,16 @@ class Deformation(Entity) :
         ])
 
 class Group(Entity) :
+    __tablename__ = 'groups'
     name = Column(String)
     markers = OneToMany('Marker')
 
 class Grid(Entity) :
+    __tablename__ = 'grids'
     name = Column(String)
     description = Column(String, nullable=True)
     
-    points = OneToMany('GridPoint') # has many boundary points
+    points = OneToMany('Point') # has many boundary points
     parent = ManyToOne('Grid') # has one parent
     children = OneToMany('Grid') # has many children
     markers = OneToMany('Marker') # has many markers
@@ -74,20 +92,25 @@ class Grid(Entity) :
     east = Column(Float)
     north = Column(Float)
 
-class GridPoint(Entity) :
+class Point(Entity) :
+    __tablename__ = 'points'
     grid = ManyToOne('Grid')
     longitude = Column(Float)
     latitude = Column(Float)
 
-class Marker(Entity) :
+class Marker(Entity,JSON) :
+    __tablename__ = 'markers'
+    keys = "name description grid group longitude latitude".split()
+    
     name = Column(String)
     description = Column(String, nullable=True)
     grid = ManyToOne('Grid')
     group = ManyToOne('Group')
     longitude = Column(Float)
     latitude = Column(Float)
-
+ 
 class Job(Entity) :
+    __tablename__ = 'jobs'
     # a scenario may have many jobs in the case where the job fails
     scenario = ManyToOne('Scenario')
     
@@ -100,6 +123,7 @@ class Job(Entity) :
     qtype = Column(String) # Queue type
 
 class NodeType(Entity) :
+    __tablename__ = 'node_types'
     value = Column(String)
     
     def __init__(self,value=None) :
@@ -110,6 +134,7 @@ class NodeType(Entity) :
         self.value = value
 
 class Scenario(Entity) :
+    __tablename__ = 'scenarios'
     modeling_time = Column(Float) # hours
     time_step = Column(Float) # seconds
     output_step = Column(Float) # seconds
