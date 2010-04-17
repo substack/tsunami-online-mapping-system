@@ -12,11 +12,7 @@
                 <label for="deformations">Deformation Model</label>
             </th>
             <td>
-                <select name"deformations">
-                    {% for name in deformations %}
-                        <option value="{{ name | e }}">{{ name | e }}</option> 
-                    {% endfor %}
-                </select>
+                <select name"deformations" id="deformations"></select>
             </td>
         </tr>
         <tr>

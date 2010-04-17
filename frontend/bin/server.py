@@ -42,9 +42,7 @@ app = None
 
 @get('/')
 def index(request) :
-    return app.render('index.html',
-        deformations=[ d.name for d in Deformation.query.all() ],
-    )
+    return app.render('index.html')
 
 @get('/css/(?P<filename>.+)')
 def css(request,filename) :
@@ -89,6 +87,18 @@ def marker_names(request) :
 @get('/data/markers/name/(?P<name>.+)')
 def marker_from_name(request, name) :
     return Marker.json(Marker.query.filter_by(name=name).first())
+
+@get('/data/deformations')
+def deformations(request) :
+    return Deformation.json()
+
+@get('/data/deformations/names')
+def marker_names(request) :
+    return js.dumps([ x[0] for x in session.query(Deformation.name).all() ])
+
+@get('/data/deformations/name/(?P<name>.+)')
+def marker_from_name(request, name) :
+    return Deformation.json(Deformation.query.filter_by(name=name).first())
 
 if __name__ == '__main__' :
     import sys, os
