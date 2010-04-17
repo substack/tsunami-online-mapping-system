@@ -26,4 +26,33 @@ google.setOnLoadCallback(function () {
         );
     });
     $(window).resize();
+    
+    deformations.each(function (name,def) {
+        $("select#deformations").append(
+            $(document.createElement("option"))
+                .attr("value", name)
+                .text(name)
+        );
+    });
+    
+    $("select#deformations").change(function () {
+        var name = $(this).attr("value");
+        var def = deformations.get(name);
+        var wsen = "west south east north".split(" ").map(def.get)
+            .map(function (x) {
+                while (x > 180) x -= 360;
+                while (x < -180) x += 360;
+                return x;
+            });
+        var w = -wsen[0]; var s = wsen[1]; var e = -wsen[2]; var n = wsen[3];
+        
+        map.clearOverlays();
+        map.addOverlay(new google.maps.GroundOverlay(
+            "/overlays/" + name + ".png",
+            new google.maps.LatLngBounds(
+                new google.maps.LatLng(s,w),
+                new google.maps.LatLng(n,e)
+            )
+        ));
+    });
 });

@@ -63,6 +63,13 @@ def js(request,filename) :
         content_type=content_type(filename)
     )
 
+@get('/overlays/(?P<filename>.+)')
+def overlays(request,filename) :
+    return Response(
+        static_file(filename, root=app.root('overlays')),
+        content_type=content_type(filename)
+    )
+
 @get('/old_page')
 def old_page(request) :
     return app.render('old_page.html',
