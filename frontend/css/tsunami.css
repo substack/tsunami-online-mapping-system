@@ -52,3 +52,29 @@ div#tabs form table tr td input[type="text"] {
     overflow-y: scroll;
     height: 100px
 }
+
+ul#markers {
+    padding: 0px;
+    margin: 0x;
+}
+
+ul#markers label {
+    cursor: pointer;
+}
+
+ul#markers li {
+    background-image: none;
+    list-style-type: none;
+    cursor: pointer;
+}
+
+ul#markers li.collapsable {
+    padding-left: 12px;
+    background-image: url(/images/collapsed.png);
+    background-repeat: no-repeat;
+    background-position: 0px 3px;
+}
+
+ul#markers li.expanded {
+    background-image: url(/images/expanded.png);
+}

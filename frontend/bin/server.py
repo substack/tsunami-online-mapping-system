@@ -49,6 +49,13 @@ def index(request) :
         ))
     )
 
+@get('/images/(?P<filename>.+)')
+def images(request,filename) :
+    return Response(
+        static_file(filename, root=app.root('images')),
+        content_type=content_type(filename)
+    )
+
 @get('/css/(?P<filename>.+)')
 def css(request,filename) :
     return Response(

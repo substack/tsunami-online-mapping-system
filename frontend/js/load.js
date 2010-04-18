@@ -1,5 +1,5 @@
 google.load("maps", "2");
-$(window).load(function () {
+$(document).ready(function () {
     var canvas = $("#map_canvas");
     
     // setup the map canvas
@@ -63,17 +63,42 @@ $(window).load(function () {
     });
     
     groups.each(function (name,group) {
-        $("ul#markers").append(
-            $(document.createElement("li"))
-                .append($(document.createElement("input"))
-                    .attr("type", "checkbox")
-                    .attr("value", name)
+        function item (prefix,name,hash) {
+            var id = prefix = String(group.get("id"));
+            return $(document.createElement("li"))
+                .append(
+                    $(document.createElement("input"))
+                        .attr("type", "checkbox")
                 )
                 .append(
                     $(document.createElement("label"))
+                        .attr("for", id)
                         .append($(document.createTextNode(name)))
-                )
+                );
+        }
+        
+        var ul = $(document.createElement("ul"));
+        markers.each(function (name,marker) {
+            if (marker.get("group_id") == group.get("id")) {
+                ul.append(item("marker_",name,marker)).hide();
+            }
+        });
+        
+        $("ul#markers")
+            .append(
+                item("group_",name,group)
+                    .addClass("collapsable")
+                    .toggle(
+                        function () {
+                            $(this).addClass("expanded");
+                            ul.show();
+                        },
+                        function () {
+                            $(this).removeClass("expanded");
+                            ul.hide();
+                        }
+                    )
             )
-        ;
+            .append(ul);
     });
 });
