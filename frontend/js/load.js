@@ -1,7 +1,5 @@
 google.load("maps", "2");
-google.load("jquery", "1.4.2");
-google.load("jqueryui", "1.8.0");
-google.setOnLoadCallback(function () {
+$(window).load(function () {
     var canvas = $("#map_canvas");
     
     // setup the map canvas
@@ -65,14 +63,16 @@ google.setOnLoadCallback(function () {
     });
     
     groups.each(function (name,group) {
-        $("#markers-tab").append(
-            $(document.createElement("div"))
-                .addClass("marker")
+        $("ul#markers").append(
+            $(document.createElement("li"))
                 .append($(document.createElement("input"))
                     .attr("type", "checkbox")
                     .attr("value", name)
                 )
-                .append($(document.createTextNode(name)))
+                .append(
+                    $(document.createElement("label"))
+                        .append($(document.createTextNode(name)))
+                )
             )
         ;
     });
