@@ -44,14 +44,17 @@ google.setOnLoadCallback(function () {
     });
     
     $("select#deformations").change(function () {
+        map.clearOverlays();
+        
         var name = $(this).attr("value");
+        if (name == "") return;
+        
         var def = deformations.get(name);
         var w = def.get("west");
         var s = def.get("south");
         var e = def.get("east");
         var n = def.get("north");
         
-        map.clearOverlays();
         map.addOverlay(new google.maps.GroundOverlay(
             "/overlays/" + name + ".png",
             new google.maps.LatLngBounds(
