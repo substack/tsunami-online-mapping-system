@@ -46,20 +46,17 @@ google.setOnLoadCallback(function () {
     $("select#deformations").change(function () {
         var name = $(this).attr("value");
         var def = deformations.get(name);
-        var wsen = "west south east north".split(" ").map(def.get)
-            .map(function (x) {
-                while (x > 180) x -= 360;
-                while (x < -180) x += 360;
-                return x;
-            });
-        var w = -wsen[0]; var s = wsen[1]; var e = -wsen[2]; var n = wsen[3];
+        var w = def.get("west");
+        var s = def.get("south");
+        var e = def.get("east");
+        var n = def.get("north");
         
         map.clearOverlays();
         map.addOverlay(new google.maps.GroundOverlay(
             "/overlays/" + name + ".png",
             new google.maps.LatLngBounds(
-                new google.maps.LatLng(s,w),
-                new google.maps.LatLng(n,e)
+                new google.maps.LatLng(s,e),
+                new google.maps.LatLng(n,w)
             )
         ));
     });
