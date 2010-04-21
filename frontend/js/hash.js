@@ -1,5 +1,12 @@
 function Hash(elems) {
     if (elems == undefined) elems = {};
+    if (elems instanceof Array) {
+        var nelems = {};
+        for (var i in elems) {
+            nelems[elems[i][0]] = elems[i][1];
+        }
+        elems = nelems;
+    }
     
     this.get = function (key) {
         return elems[key];
@@ -40,6 +47,10 @@ function Hash(elems) {
         }
         return this;
     };
+    
+    this.sort = function (f) {
+        return new Hash(this.items().sort(f));
+    }
     
     this.foldl = function (x, f) {
         var acc = x;
