@@ -55,7 +55,7 @@ div#tabs form table tr td input[type="text"] {
 
 ul#markers {
     padding: 0px;
-    margin: 0x;
+    margin: 0px;
 }
 
 ul#markers label {
@@ -69,12 +69,13 @@ ul#markers li {
 }
 
 ul#markers li.collapsable {
-    padding-left: 12px;
-    background-image: url(/images/collapsed.png);
-    background-repeat: no-repeat;
-    background-position: 0px 3px;
 }
 
 ul#markers li.expanded {
-    background-image: url(/images/expanded.png);
+}
+
+img#marker {
+    position: absolute;
+    top: 3.5em;
+    right: 3em;
 }

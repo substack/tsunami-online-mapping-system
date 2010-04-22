@@ -113,6 +113,8 @@ $(document).ready(function () {
             ul.find("input:checkbox").attr("checked",checked);
         });
         
+        elem.find("label").toggle(expand,collapse);
+        
         $("ul#markers")
             .append(elem)
             .append(ul)
