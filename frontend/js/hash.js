@@ -37,7 +37,7 @@ function Hash(items) {
     
     this.each = function (f) {
         for (var key in this.__items__) {
-            return f(key, this.__items__[key]);
+            f(key, this.__items__[key]);
         }
         return undefined;
     };
