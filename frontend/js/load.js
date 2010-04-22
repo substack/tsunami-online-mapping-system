@@ -47,11 +47,11 @@ $(document).ready(function () {
         var name = $(this).attr("value");
         if (name == "") return;
         
-        var def = deformations.get(name);
-        var w = def.get("west");
-        var s = def.get("south");
-        var e = def.get("east");
-        var n = def.get("north");
+        var def = deformations.at(name);
+        var w = def.at("west");
+        var s = def.at("south");
+        var e = def.at("east");
+        var n = def.at("north");
         
         map.addOverlay(new google.maps.GroundOverlay(
             "/overlays/" + name + ".png",
@@ -63,42 +63,59 @@ $(document).ready(function () {
     });
     
     groups.each(function (name,group) {
-        function item (prefix,name,hash) {
-            var id = prefix = String(group.get("id"));
+        function item (prefix,name,hash,collapse) {
             return $(document.createElement("li"))
                 .append(
                     $(document.createElement("input"))
                         .attr("type", "checkbox")
+                        .attr("name", name)
                 )
                 .append(
                     $(document.createElement("label"))
-                        .attr("for", id)
+                        .attr("for", name)
                         .append($(document.createTextNode(name)))
-                );
+                )
+            ;
         }
         
         var ul = $(document.createElement("ul"));
-        markers.each(function (name,marker) {
-            if (marker.get("group_id") == group.get("id")) {
+        markers
+            .sort() // sort by key name
+            .filter(function (name,marker) {
+                return marker.group_id == group.id;
+            })
+            .each(function (name,marker) {
                 ul.append(item("marker_",name,marker)).hide();
-            }
+            })
+        ;
+        
+        var im = $(document.createElement("img"))
+            .attr("src", "/images/collapsed.png")
+            .toggle(expand,collapse);
+        
+        function expand () {
+            im.attr("src", "/images/expanded.png");
+            ul.show();
+        }
+        
+        function collapse () {
+            $(elem).removeClass("expanded");
+            im.attr("src", "/images/collapsed.png");
+            ul.hide();
+        }
+        
+        var elem = item("group_",name,group)
+            .addClass("collapsable")
+            .prepend(im)
+        ;
+        elem.find("input:checkbox").change(function () {
+            var checked = $(this).attr("checked");
+            ul.find("input:checkbox").attr("checked",checked);
         });
         
         $("ul#markers")
-            .append(
-                item("group_",name,group)
-                    .addClass("collapsable")
-                    .toggle(
-                        function () {
-                            $(this).addClass("expanded");
-                            ul.show();
-                        },
-                        function () {
-                            $(this).removeClass("expanded");
-                            ul.hide();
-                        }
-                    )
-            )
-            .append(ul);
+            .append(elem)
+            .append(ul)
+        ;
     });
 });
