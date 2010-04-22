@@ -34,6 +34,16 @@ function Hash(items) {
         }, new Hash());
     };
     
+    this.first = function (f) {
+        for (var key in items) {
+            var value = items[key];
+            if (f(key,value)) {
+                return [ key, value ];
+            }
+        }
+        return undefined;
+    }
+    
     this.each = function (f) {
         for (var key in items) {
             f(key, items[key]);
@@ -74,6 +84,8 @@ Hash.prototype = {
             return acc.concat([[key,value]]);
         }, []);
     },
+    get head () { return this.pairs[0]; },
+    get tail () { return this.pairs.slice(1); },
     get items () {
         return this.foldl(function (acc,key,value) {
             acc[key] = value;
@@ -89,5 +101,5 @@ Hash.prototype = {
         return this.foldl(function (acc,_,value) {
             return acc.concat([value]);
         }, [])
-    },
+    }
 };
