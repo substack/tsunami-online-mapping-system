@@ -198,10 +198,12 @@ function drawGrids(map) {
             function change() {
                 if ($(this).attr("checked")) {
                     var pair = with_id(grid.parent_id);
-                    while (pair != undefined) {
+                    if (pair != undefined) {
                         var parent = pair[1];
-                        $("#grid_" + parent.name).attr("checked",true);
-                        pair = with_id(parent.parent_id);
+                        $("#grid_" + parent.name)
+                            .attr("checked",true)
+                            .change()
+                        ;
                     }
                 }
             }
