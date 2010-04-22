@@ -35,7 +35,7 @@ $(document).ready(function () {
     $(window).resize();
     
     deformations.each(function (name,def) {
-        $("select#deformations").append(
+        $("select#deformations").prepend(
             $(document.createElement("option"))
                 .attr("value", name)
                 .text(name)
