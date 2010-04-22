@@ -3,11 +3,10 @@ function Hash(items) {
     if (items instanceof Hash) {
         items = items.items;
     }
-    this.__items__ = items;
     
     this.foldr = function (f,acc) {
-        for (var key in this.__items__) {
-            acc = f(key,this.__items__[key],acc);
+        for (var key in items) {
+            acc = f(key,items[key],acc);
         }
         return acc;
     };
@@ -36,8 +35,8 @@ function Hash(items) {
     };
     
     this.each = function (f) {
-        for (var key in this.__items__) {
-            f(key, this.__items__[key]);
+        for (var key in items) {
+            f(key, items[key]);
         }
         return undefined;
     };
@@ -54,8 +53,8 @@ function Hash(items) {
         return new Hash(elems);
     };
     
-    this.at = function (key,value) {
-        return this.__items__[value];
+    this.at = function (key) {
+        return items[key];
     };
     
     this.sort = function (f) {
