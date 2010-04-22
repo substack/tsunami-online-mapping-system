@@ -1,4 +1,5 @@
 google.load("maps", "2");
+var moo;
 $(document).ready(function () {
     var canvas = $("#map_canvas");
     
@@ -119,5 +120,27 @@ $(document).ready(function () {
             .append(elem)
             .append(ul)
         ;
+        
+        $("img#marker").draggable({ helper : "clone" });
+        canvas.droppable({
+            drop : function (ev,ui) {
+                var pt = map.fromContainerPixelToLatLng(
+                    new google.maps.Point(
+                        ev.pageX - ev.offsetX + 8,
+                        ev.pageY - ev.offsetY + 33
+                    )
+                );
+                var name = $("#new-marker-name").val();
+                markers = markers.cons(name, {
+                    name : name,
+                    latitude : pt.lat(),
+                    longitude : pt.lng(),
+                    mutable : true,
+                });
+                map.addOverlay(new google.maps.Marker(pt), {
+                    dragCrossMove : true
+                });
+            }
+        });
     });
 });
