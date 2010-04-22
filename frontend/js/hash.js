@@ -1,80 +1,88 @@
-function Hash(elems) {
-    if (elems == undefined) elems = {};
-    if (elems instanceof Array) {
-        var nelems = {};
-        for (var i in elems) {
-            nelems[elems[i][0]] = elems[i][1];
-        }
-        elems = nelems;
-    }
+function Hash(items) {
+    if (items == undefined) items = {};
+    this.__items__ = items;
     
-    this.get = function (key) {
-        return elems[key];
-    };
-    
-    this.set = function (key, value) {
-        elems[key] = value;
-        return this;
-    };
-    
-    this.keys = function () {
-        var acc = [];
-        for (var key in elems) {
-            acc.push(key);
+    this.foldr = function (f,acc) {
+        for (var key in this.__items__) {
+            acc = f(key,this.__items__[key],acc);
         }
         return acc;
     };
     
-    this.values = function () {
-        var acc = [];
-        for (var key in elems) {
-            acc.push(elems[key]);
-        }
-        return acc;
+    this.foldl = function (f,acc) {
+        return this.foldr(function (key,value,acc) {
+            return f(acc,key,value);
+        }, acc);
     };
-
-    this.items = function () {
-        var acc = [];
-        for (var key in elems) {
-            acc.push([ key, elems[key] ]);
-        }
-        return acc;
+    
+    this.map = function (f) {
+        this.foldl(function (acc,key,value) {
+            return acc.cons(key,f(key,value));
+        }, new Hash());
+    };
+    
+    this.filter = function (f) {
+        this.foldl(function (acc,key,value) {
+            if (f(key,value)) {
+                return acc.cons(key,value);
+            }
+            else {
+                return acc;
+            }
+        }, new Hash());
     };
     
     this.each = function (f) {
-        for (var key in elems) {
-            f(key,elems[key]);
+        for (var key in this.__items__) {
+            return f(key, this.__items__[key]);
         }
-        return this;
+        return undefined;
+    };
+    
+    this.concat = function (xs) {
+        return new Hash(xs).foldl(function (that,key,value) {
+            return that.cons(key,value);
+        });
+    };
+    
+    this.cons = function (key,value) {
+        var elems = this.items;
+        elems[key] = value;
+        return new Hash(elems);
+    };
+    
+    this.at = function (key,value) {
+        return this.__items__[value];
     };
     
     this.sort = function (f) {
-        return new Hash(this.items().sort(f));
-    }
-    
-    this.foldl = function (x, f) {
-        var acc = x;
-        for (var key in elems) {
-            acc = f(acc,key,elems[key]);
-        }
-        return acc;
+        return this.pairs.sort().reduce(function (hash,pair) {
+            return hash.cons(pair[0], pair[1]);
+        }, new Hash());
     };
     
-    this.toString = function () {
-        function show(x) {
-            if (typeof(x) == "string") {
-                return '"' + x.replace(/\\/g, '').replace(/"/g, '\\\\') + '"';
-            }
-            else if (x == null || x == undefined) {
-                return String(x);
-            }
-            else {
-                return x.toString();
-            }
-        }
-        return "{" + this.foldl([], function (acc,key,value) {
-            acc.push([key,value].map(show).join(":"));
-            return acc;
-        }).join(",") + "}";
-    };
 }
+
+Hash.prototype = {
+    get pairs () {
+        return this.foldl(function (acc,key,value) {
+            return acc.concat([key,value]);
+        }, []);
+    },
+    get items () {
+        return this.foldl(function (acc,key,value) {
+            acc[key] = value;
+            return acc;
+        }, {})
+    },
+    get keys () {
+        return this.foldl(function (acc,key,_) {
+            return acc.concat([key]);
+        }, [])
+    },
+    get values () {
+        return this.foldl(function (acc,_,value) {
+            return acc.concat([value]);
+        }, [])
+    },
+};
