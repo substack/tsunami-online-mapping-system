@@ -49,16 +49,11 @@ $(document).ready(function () {
         if (name == "") return;
         
         var def = deformations.at(name);
-        var w = def.at("west");
-        var s = def.at("south");
-        var e = def.at("east");
-        var n = def.at("north");
-        
         map.addOverlay(new google.maps.GroundOverlay(
             "/overlays/" + name + ".png",
             new google.maps.LatLngBounds(
-                new google.maps.LatLng(s,e),
-                new google.maps.LatLng(n,w)
+                new google.maps.LatLng(def.south,def.east),
+                new google.maps.LatLng(def.north,def.west)
             )
         ));
     });
