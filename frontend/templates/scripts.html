@@ -14,12 +14,9 @@
 <script type="text/javascript">
     // pivot on the name keys of these lists of hashes
     function pivot (rows) {
-        var hash = new Hash;
-        for (var i in rows) {
-            var row = rows[i];
-            hash.set(row.name, new Hash(row));
-        }
-        return hash;
+        return rows.reduce(function (hash,row) {
+            return hash.cons(row.name, row);
+        }, new Hash);
     }
     
     var deformations = pivot({{ json.deformations }});
