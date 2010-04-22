@@ -19,13 +19,13 @@ function Hash(items) {
     };
     
     this.map = function (f) {
-        this.foldl(function (acc,key,value) {
+        return this.foldl(function (acc,key,value) {
             return acc.cons(key,f(key,value));
         }, new Hash());
     };
     
     this.filter = function (f) {
-        this.foldl(function (acc,key,value) {
+        return this.foldl(function (acc,key,value) {
             if (f(key,value)) {
                 return acc.cons(key,value);
             }
