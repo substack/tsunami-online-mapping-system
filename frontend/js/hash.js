@@ -1,5 +1,8 @@
 function Hash(items) {
     if (items == undefined) items = {};
+    if (items instanceof Hash) {
+        items = items.items;
+    }
     this.__items__ = items;
     
     this.foldr = function (f,acc) {
@@ -39,10 +42,10 @@ function Hash(items) {
         return undefined;
     };
     
-    this.concat = function (xs) {
-        return new Hash(xs).foldl(function (that,key,value) {
-            return that.cons(key,value);
-        });
+    this.concat = function (that) {
+        return that.foldl(function (hash,key,value) {
+            return hash.cons(key,value);
+        }, new Hash(this));
     };
     
     this.cons = function (key,value) {
