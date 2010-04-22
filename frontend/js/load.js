@@ -195,10 +195,36 @@ function drawGrids(map) {
     function gridList(gs) {
         var ul = $(document.createElement("ul"));
         gs.each(function (name,grid) {
+            function change() {
+                if ($(this).attr("checked")) {
+                    var pair = with_id(grid.parent_id);
+                    while (pair != undefined) {
+                        var parent = pair[1];
+                        $("#grid_" + parent.name).attr("checked",true);
+                        pair = with_id(parent.parent_id);
+                    }
+                }
+            }
+            
             ul.append(
                 $(document.createElement("li"))
-                    .append($(document.createTextNode(name)))
-                    .append(gridList(children(grid)))
+                    .append(
+                        $(document.createElement("input"))
+                            .attr("type", "checkbox")
+                            .attr("name", "grid_" + name)
+                            .attr("id", "grid_" + name)
+                            .change(change)
+                    )
+                    .append(
+                        $(document.createElement("span"))
+                            .append($(document.createTextNode(name)))
+                    )
+                    .append(
+                        $(document.createTextNode(grid.description))
+                    )
+                    .append(
+                        gridList(children(grid))
+                    )
             );
         });
         return ul;
@@ -208,5 +234,5 @@ function drawGrids(map) {
         grids.filter(function (name,grid) { // top-level grids
             return grid.parent_id == null;
         })
-    ));
+    ).attr("id", "grids"));
 }

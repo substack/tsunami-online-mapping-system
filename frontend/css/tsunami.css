@@ -67,7 +67,6 @@ ul#markers label {
 }
 
 ul#markers li {
-    background-image: none;
     list-style-type: none;
     cursor: pointer;
 }
@@ -89,4 +88,17 @@ input#new-marker-name {
     top: 3.5em;
     right: 5em;
     width: 10em;
+}
+
+div#grids-tab ul {
+    list-style-type: none;
+}
+
+div#grids-tab ul li span {
+    font-weight: bold;
+    margin-right: 1em;
+}
+
+div#grids-tab ul#grids {
+    padding: 0em;
 }
