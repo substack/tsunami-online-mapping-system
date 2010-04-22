@@ -197,6 +197,7 @@ function drawGrids(map) {
         gs.each(function (name,grid) {
             function change() {
                 if ($(this).attr("checked")) {
+                    map.addOverlay(grid.polygon);
                     var pair = with_id(grid.parent_id);
                     if (pair != undefined) {
                         var parent = pair[1];
@@ -205,6 +206,14 @@ function drawGrids(map) {
                             .change()
                         ;
                     }
+                }
+                else {
+                    map.removeOverlay(grid.polygon);
+                    children(grid).each(function (n,c) {
+                        $("#grid_" + c.name)
+                            .attr("checked",false)
+                            .change()
+                    });
                 }
             }
             
