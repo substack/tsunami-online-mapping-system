@@ -69,7 +69,7 @@ function Hash(items) {
 Hash.prototype = {
     get pairs () {
         return this.foldl(function (acc,key,value) {
-            return acc.concat([key,value]);
+            return acc.concat([[key,value]]);
         }, []);
     },
     get items () {
