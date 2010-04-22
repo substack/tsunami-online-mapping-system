@@ -16,14 +16,14 @@ $(document).ready(function () {
         handles : 's',
         resize : function (ev,ui) {
             tabs.height($(window).height() - ui.size.height - 30);
-            $("#markers-tab").height(
+            $(".tab").height(
                 tabs.height() - $("#tabs-bar").height()
             );
         }
     });
     
     tabs.height($(window).height() - canvas.height - 30);
-    $("#markers-tab").height(
+    $(".tab").height(
         tabs.height() - $("#tabs-bar").height() - 15
     );
     
@@ -170,4 +170,43 @@ function drawMarkers(map) {
 }
 
 function drawGrids(map) {
+    function with_id (id) {
+        return grids.first(function (key,grid) {
+            return grid.id == id;
+        });
+    }
+    
+    function children (grid) {
+        return grids.filter(function (key,g) {
+            return g.parent_id == grid.id;
+        });
+    }
+    
+    grids.each(function (name,grid) {
+        grid.polygon = new google.maps.Polygon([
+            new google.maps.LatLng(grid.north, grid.west),
+            new google.maps.LatLng(grid.north, grid.east),
+            new google.maps.LatLng(grid.south, grid.east),
+            new google.maps.LatLng(grid.south, grid.west),
+            new google.maps.LatLng(grid.north, grid.west)
+        ]);
+    });
+    
+    function gridList(gs) {
+        var ul = $(document.createElement("ul"));
+        gs.each(function (name,grid) {
+            ul.append(
+                $(document.createElement("li"))
+                    .append($(document.createTextNode(name)))
+                    .append(gridList(children(grid)))
+            );
+        });
+        return ul;
+    }
+    
+    $("#grids-tab").append(gridList(
+        grids.filter(function (name,grid) { // top-level grids
+            return grid.parent_id == null;
+        })
+    ));
 }

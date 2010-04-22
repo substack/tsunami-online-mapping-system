@@ -48,7 +48,7 @@ div#tabs form table tr td input[type="text"] {
     width: 5em;
 }
 
-#markers-tab {
+div.tab {
     overflow-y: scroll;
     height: 100px
 }
