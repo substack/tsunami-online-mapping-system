@@ -48,8 +48,11 @@ function Hash(items) {
     };
     
     this.cons = function (key,value) {
-        var elems = this.items;
+        var elems = {};
         elems[key] = value;
+        this.each(function (key,value) {
+            elems[key] = value;
+        });
         return new Hash(elems);
     };
     
