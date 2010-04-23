@@ -35,6 +35,14 @@ $(document).ready(function () {
     $(window).resize();
     
     deformations.each(function (name,def) {
+        def.overlay = new google.maps.GroundOverlay(
+            "/overlays/" + name + ".png",
+            new google.maps.LatLngBounds(
+                new google.maps.LatLng(def.south,def.east),
+                new google.maps.LatLng(def.north,def.west)
+            )
+        );
+        
         $("select#deformations").prepend(
             $(document.createElement("option"))
                 .attr("value", name)
@@ -43,19 +51,13 @@ $(document).ready(function () {
     });
     
     $("select#deformations").change(function () {
-        map.clearOverlays();
-        
         var name = $(this).attr("value");
         if (name == "") return;
         
-        var def = deformations.at(name);
-        map.addOverlay(new google.maps.GroundOverlay(
-            "/overlays/" + name + ".png",
-            new google.maps.LatLngBounds(
-                new google.maps.LatLng(def.south,def.east),
-                new google.maps.LatLng(def.north,def.west)
-            )
-        ));
+        deformations.each(function (_,def) {
+            map.removeOverlay(def.overlay)
+        });
+        map.addOverlay(deformations.at(name).overlay);
     });
     drawMarkers(map);
     drawGrids(map);
