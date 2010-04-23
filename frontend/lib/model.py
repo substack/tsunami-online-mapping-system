@@ -115,6 +115,7 @@ class Job(Entity,JSON) :
     scenario = ManyToOne('Scenario')
     person = Column(String) # the "Investigator" of the senario
     name = Column(String)
+    description = Column(String)
     nodes = Column(Integer)
     node_type = ManyToOne('NodeType')
     qtype = Column(String) # Queue type
