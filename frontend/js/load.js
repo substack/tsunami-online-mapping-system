@@ -44,7 +44,7 @@ $(document).ready(function () {
         );
         
         $("select#deformations").prepend(
-            $(document.createElement("option"))
+            $("<option>")
                 .attr("value", name)
                 .text(name)
         );
@@ -70,21 +70,21 @@ function drawMarkers(map) {
     
     groups.cons("User", { id : -1, name : "User" }).each(function (name,group) {
         function item (prefix,name,hash,collapse) {
-            return $(document.createElement("li"))
+            return $("<li>")
                 .append(
-                    $(document.createElement("input"))
+                    $("<input>")
                         .attr("type", "checkbox")
                         .attr("name", name)
                 )
                 .append(
-                    $(document.createElement("label"))
+                    $("<label>")
                         .attr("for", name)
-                        .append($(document.createTextNode(name)))
+                        .text(name)
                 )
             ;
         }
         
-        var ul = $(document.createElement("ul"));
+        var ul = $("<ul>");
         markers
             .sort() // sort by key name
             .filter(function (name,marker) {
@@ -109,7 +109,7 @@ function drawMarkers(map) {
             })
         ;
         
-        var im = $(document.createElement("img"))
+        var im = $("<img>")
             .attr("src", "/images/collapsed.png")
             .toggle(expand,collapse);
         
@@ -198,26 +198,40 @@ function drawGrids(map) {
     });
     
     function gridList(gs) {
-        var ul = $(document.createElement("ul"));
+        var ul = $("<ul>");
         gs.each(function (name,grid) {
             ul.append(
-                $(document.createElement("li"))
+                $("<li>")
                     .append(
-                        $(document.createElement("input"))
+                        $("<input>")
                             .attr("type", "checkbox")
                             .attr("name", "grid_" + name)
                             .attr("id", "grid_" + name)
+                            .change(function () {
+                                if ($(this).attr("checked")) {
+                                    map.addOverlay(grid.polygon);
+                                    var parent = with_id(grid.parent_id);
+                                    console.log(grid.parent_id);
+                                    console.log(parent);
+                                    if (parent) {
+                                        $("#grid_" + parent[1].name)
+                                            .attr("checked",true)
+                                            .change();
+                                    }
+                                }
+                                else {
+                                    map.removeOverlay(grid.polygon);
+                                    children(grid).each(function (n,g) {
+                                        $("#grid_" + g.name)
+                                            .attr("checked",false)
+                                            .change();
+                                    });
+                                }
+                            })
                     )
-                    .append(
-                        $(document.createElement("span"))
-                            .append($(document.createTextNode(name)))
-                    )
-                    .append(
-                        $(document.createTextNode(grid.description))
-                    )
-                    .append(
-                        gridList(children(grid))
-                    )
+                    .append($("<span>").addClass("grid-name").text(name))
+                    .append($("<span>").text(grid.description))
+                    .append(gridList(children(grid)))
             );
         });
         return ul;

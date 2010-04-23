@@ -94,7 +94,7 @@ div#grids-tab ul {
     list-style-type: none;
 }
 
-div#grids-tab ul li span {
+div#grids-tab ul li span.grid-name {
     font-weight: bold;
     margin-right: 1em;
 }
