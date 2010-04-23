@@ -155,6 +155,10 @@ def update_job_progress(request,job_id,progress) :
     Job.get_by(id=job_id).progress = float(progress)
     session.commit()
     return 'ok'
+@get('/control/jobs/status')
+def status(request) :
+    return Job.json()
+
 
 if __name__ == '__main__' :
     import sys, os

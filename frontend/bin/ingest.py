@@ -81,7 +81,7 @@ def ingest_grids() :
     import time
     dangling = []
     for g in grids :
-        time.sleep(5.0)
+        #time.sleep(5.0)
         
         mm = g['mm']
         
@@ -120,7 +120,7 @@ def ingest_deformations() :
     import time
     dangling = []
     for d in deformations :
-        time.sleep(5.0)
+        #time.sleep(5.0)
         extent = d['extent']
         
         for p in d['param'] :
@@ -167,7 +167,7 @@ def ingest_markers() :
             )
             session.add(marker)
         session.commit()
-        time.sleep(5.0)
+        #time.sleep(5.0)
     session.flush()
 
 def ingest() :
