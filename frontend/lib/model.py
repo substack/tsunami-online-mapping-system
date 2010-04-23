@@ -118,7 +118,7 @@ class Job(Entity,JSON) :
     description = Column(String, nullable=True)
     nodes = Column(Integer)
     node_type = ManyToOne('NodeType')
-    qtype = Column(String) # Queue type
+    qtype = Column(String) # queue type: standard, background, debug
     # columns updated by the backend:
     status = Column(String) # pending running complete failed
     start_time = Column(Integer, nullable=True)

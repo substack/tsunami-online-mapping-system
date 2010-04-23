@@ -102,3 +102,12 @@ div#grids-tab ul li span {
 div#grids-tab ul#grids {
     padding: 0em;
 }
+
+div#tabs form table#submit-fields tr td input[type="text"] {
+    width: 25em;
+}
+
+div#tabs form table#submit-fields tr td textarea {
+    width: 25em;
+    height: 5em;
+}

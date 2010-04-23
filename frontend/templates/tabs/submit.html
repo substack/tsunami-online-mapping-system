@@ -1,1 +1,43 @@
-<input type="submit" value="submit deformation">
+<table id="submit-fields">
+    <tr>
+        <th>submitted by</th>
+        <td><input type="text" name="person"></td>
+    </tr>
+    <tr>
+        <th>job name</th>
+        <td><input type="text" name="name"></td>
+    </tr>
+    <tr>
+        <th>description</th>
+        <td>
+            <textarea
+                name="description"
+                id="description"
+            ></textarea>
+        </td>
+    </tr>
+    <tr>
+        <th>nodes</th>
+        <td><input type="text" name="nodes"> (integer)</td>
+    </tr>
+    <tr>
+        <th>node type</th>
+        <td><select name="node_type">
+            <option>4-way</option>
+            <option>16-way</option>
+        </select></td>
+    </tr>
+    <tr>
+        <th>queue type</th>
+        <td><select name="queue_type">
+            <option>standard</option>
+            <option>background</option>
+            <option>debug</option>
+        </select></td>
+    </tr>
+    <tr>
+        <th colpan="2">
+            <input type="submit" value="submit deformation">
+        </th>
+    </tr>
+</table>
