@@ -113,9 +113,9 @@ class Job(Entity,JSON) :
     __tablename__ = 'jobs'
     # a scenario may have many jobs in the case where the job fails
     scenario = ManyToOne('Scenario')
-    person = Column(String) # the "Investigator" of the senario
-    name = Column(String)
-    description = Column(String)
+    person = Column(String, nullable=True) # person submitting this job
+    name = Column(String, nullable=True)
+    description = Column(String, nullable=True)
     nodes = Column(Integer)
     node_type = ManyToOne('NodeType')
     qtype = Column(String) # Queue type
