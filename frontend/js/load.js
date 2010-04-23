@@ -93,15 +93,16 @@ function drawMarkers(map) {
             .each(function (name,marker) {
                 var li = item("marker_",name,marker);
                 li.find("input:checkbox").change(function () {
-                    console.log($(this).attr("checked"));
-                    var c = $(this).attr("checked");
                     var m = markers.at(name);
-                    m.checked = c;
-                    if (c && !m.marker) {
+                    m.checked = $(this).attr("checked");
+                    if (m.checked) {
                         m.marker = new google.maps.Marker(
                             new google.maps.LatLng(m.latitude, m.longitude)
                         );
                         map.addOverlay(m.marker);
+                    }
+                    else if (m.marker) {
+                        map.removeOverlay(m.marker);
                     }
                 });
                 ul.append(li).hide();
@@ -129,7 +130,9 @@ function drawMarkers(map) {
         ;
         elem.find("input:checkbox").change(function () {
             var checked = $(this).attr("checked");
-            ul.find("input:checkbox").attr("checked",checked);
+            ul.find("input:checkbox")
+                .attr("checked",checked)
+                .change();
         });
         
         elem.find("label").toggle(expand,collapse);
@@ -197,28 +200,6 @@ function drawGrids(map) {
     function gridList(gs) {
         var ul = $(document.createElement("ul"));
         gs.each(function (name,grid) {
-            function change() {
-                if ($(this).attr("checked")) {
-                    map.addOverlay(grid.polygon);
-                    var pair = with_id(grid.parent_id);
-                    if (pair != undefined) {
-                        var parent = pair[1];
-                        $("#grid_" + parent.name)
-                            .attr("checked",true)
-                            .change()
-                        ;
-                    }
-                }
-                else {
-                    map.removeOverlay(grid.polygon);
-                    children(grid).each(function (n,c) {
-                        $("#grid_" + c.name)
-                            .attr("checked",false)
-                            .change()
-                    });
-                }
-            }
-            
             ul.append(
                 $(document.createElement("li"))
                     .append(
@@ -226,7 +207,6 @@ function drawGrids(map) {
                             .attr("type", "checkbox")
                             .attr("name", "grid_" + name)
                             .attr("id", "grid_" + name)
-                            .change(change)
                     )
                     .append(
                         $(document.createElement("span"))
