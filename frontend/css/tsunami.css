@@ -12,6 +12,10 @@ div#map_canvas {
 
 div#tabs {
     height: 13em;
+    padding: 0em;
+    border: 0;
+    margin-left: -0.5em;
+    margin-right: -0.5em;
 }
 
 div#tabs div {
@@ -48,19 +52,53 @@ div#tabs form table tr td input[type="text"] {
     width: 5em;
 }
 
-div.marker {
-    background-color: rgb(255,255,220);
-}
-
-div.marker-selected {
-    background-color: rgb(220,255,220);
-}
-
-div.marker-active {
-    background-color: rgb(255,220,220);
-}
-
-#markers-tab {
+div.tab {
     overflow-y: scroll;
-    height: 100px
+    height: 13em;
+}
+
+ul#markers {
+    padding: 0px;
+    margin: 0px;
+}
+
+ul#markers label {
+    cursor: pointer;
+}
+
+ul#markers li {
+    list-style-type: none;
+    cursor: pointer;
+}
+
+ul#markers li.collapsable {
+}
+
+ul#markers li.expanded {
+}
+
+img#marker {
+    position: absolute;
+    top: 3.5em;
+    right: 3em;
+}
+
+input#new-marker-name {
+    position: absolute;
+    top: 3.5em;
+    right: 5em;
+    width: 10em;
+}
+
+div#grids-tab ul {
+    list-style-type: none;
+}
+
+div#grids-tab ul li span {
+    font-weight: bold;
+    margin-right: 1em;
+}
+
+div#grids-tab ul#grids {
+    padding: 0em;
 }

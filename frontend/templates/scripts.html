@@ -1,20 +1,22 @@
 <script
+    src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
     type="text/javascript"
-    src="http://www.google.com/jsapi?key=ABQIAAAAG07sBB-qC9yaNXELGJpf5BRrbJnNmETF966luGlbSTr_RfkmQBR_r9lzzhGueAMWoH_XbKNIdXA-uw"
+></script>
+<script
+    src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"
+    type="text/javascript"
 ></script>
 <script
     type="text/javascript"
-    src="/js/hash.js"
+    src="http://www.google.com/jsapi?key=ABQIAAAAG07sBB-qC9yaNXELGJpf5BRrbJnNmETF966luGlbSTr_RfkmQBR_r9lzzhGueAMWoH_XbKNIdXA-uw"
 ></script>
+<script type="text/javascript" src="/js/hash.js"></script>
 <script type="text/javascript">
     // pivot on the name keys of these lists of hashes
     function pivot (rows) {
-        var hash = new Hash;
-        for (var i in rows) {
-            var row = rows[i];
-            hash.set(row.name, new Hash(row));
-        }
-        return hash;
+        return rows.reduce(function (hash,row) {
+            return hash.cons(row.name, row);
+        }, new Hash);
     }
     
     var deformations = pivot({{ json.deformations }});
@@ -23,7 +25,4 @@
     var grids = pivot({{ json.grids }});
     var points = pivot({{ json.points }});
 </script>
-<script
-    type="text/javascript"
-    src="/js/load.js"
-></script>
+<script type="text/javascript" src="/js/load.js"></script>

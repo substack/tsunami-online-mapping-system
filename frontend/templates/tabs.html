@@ -7,23 +7,23 @@
         <li><a href="#submit-tab">submit</a></li>
     </ul>
     <form action="/create_scenario" method="post">
-        <div id="deformation-tab">
+        <div id="deformation-tab" class="tab">
             {% include "tabs/deformation.html" %}
         </div>
         
-        <div id="constants-tab">
+        <div id="constants-tab" class="tab">
             {% include "tabs/constants.html" %}
         </div>
         
-        <div id="markers-tab">
+        <div id="markers-tab" class="tab">
             {% include "tabs/markers.html" %}
         </div>
         
-        <div id="grids-tab">
+        <div id="grids-tab" class="tab">
             {% include "tabs/grids.html" %}
         </div>
         
-        <div id="submit-tab">
+        <div id="submit-tab" class="tab">
             {% include "tabs/submit.html" %}
         </div>
     </form>
