@@ -7,6 +7,9 @@ basepath = '%s/../' % os.path.abspath(
 )
 sys.path.append('%s/lib' % basepath)
 
+import time
+def sleep() : time.sleep(1.0)
+
 from db import *
 from server import *
 from BeautifulSoup import BeautifulSoup
@@ -78,21 +81,19 @@ def chunkby(n,xs) :
 
 def ingest_grids() :
     from sqlalchemy.exc import OperationalError
-    import time
-    dangling = []
+    dangling = {}
     for g in grids :
-        time.sleep(5.0)
+        sleep()
         
         mm = g['mm']
+        p = g['parent']
         
         parent = None
-        try :
-            parent = session.query(Grid).filter_by(name=g['parent']).first()
-        except OperationalError :
-            dangling.append((g['name'],g['parent']))
-        
-        if session.query(Grid).filter_by(name=g['name']).count() > 0 :
-            continue
+        if Grid.query.filter_by(name=p).count() == 1 :
+            parent = Grid.query.filter_by(name=p).first()
+        else :
+            if p not in dangling : dangling[p] = []
+            dangling[p].append(g['name'])
         
         print(g)
         
@@ -109,10 +110,12 @@ def ingest_grids() :
         session.add(grid)
         session.commit()
     
-    for (name,parent) in dangling :
-        session.query(Grid).filter_by(name=name).first() \
-            . parent = session.query(Grid).filter_by(name=parent).first()
+    for (parent,names) in dangling.items() :
+        for name in names :
+            Grid.query.filter_by(name=name).first().parent = \
+                Grid.query.filter_by(name=parent).first()
     
+    session.commit()
     session.flush()
 
 def ingest_deformations() :
@@ -120,7 +123,7 @@ def ingest_deformations() :
     import time
     dangling = []
     for d in deformations :
-        time.sleep(5.0)
+        sleep()
         extent = d['extent']
         
         for p in d['param'] :
@@ -153,9 +156,9 @@ def ingest_markers() :
             lon, lat = map(float, params[:2])
             name, grid_name, group_name, desc = params[2:]
             
-            group = session.query(Group).filter_by(name=group_name).first()
+            group = Group.query.filter_by(name=group_name).first()
             if not group : group = Group(name=group_name)
-            grid = session.query(Grid).filter_by(name=grid_name).first()
+            grid = Grid.query.filter_by(name=grid_name).first()
             
             marker = Marker(
                 name=name,
@@ -167,7 +170,7 @@ def ingest_markers() :
             )
             session.add(marker)
         session.commit()
-        time.sleep(5.0)
+        sleep()
     session.flush()
 
 def ingest() :
