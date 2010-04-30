@@ -143,22 +143,26 @@ def point_from_name(request, name) :
     return Point.json(Point.query.filter_by(name=name).first())
 
 #jobs
-@get('/control/jobs/(?P<job_id>\d+)/update/status/(?P<status>.*)')
+@get('/data/jobs/pending')
+def pending_jobs(request) :
+    return Job.json(Job.query.filter_by(status='pending'))
+
+@get('/data/jobs/(?P<job_id>\d+)/update/status/(?P<status>.*)')
 def update_job_status(request,job_id,status) :
     Job.get_by(id=job_id).status = status
     session.commit()
     return 'ok'
-@get('/control/jobs/(?P<job_id>\d+)/update/start_time/(?P<start_time>.*)')
+@get('/data/jobs/(?P<job_id>\d+)/update/start_time/(?P<start_time>.*)')
 def update_job_start_time(request,job_id,start_time) :
     Job.get_by(id=job_id).start_time = int(start_time)
     session.commit()
     return 'ok'
-@get('/control/jobs/(?P<job_id>\d+)/update/progress/(?P<progress>.*)')
+@get('/data/jobs/(?P<job_id>\d+)/update/progress/(?P<progress>.*)')
 def update_job_progress(request,job_id,progress) :
     Job.get_by(id=job_id).progress = float(progress)
     session.commit()
     return 'ok'
-@get('/control/jobs/status')
+@get('/data/jobs/status')
 def status(request) :
     return Job.json()
 
