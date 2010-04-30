@@ -2,6 +2,8 @@
 from itty import *
 from jinja2 import Environment, Template, FileSystemLoader
 
+import re
+
 # add lib to search path
 if sys.argv[0] == '' : sys.argv[0] = './'
 basepath = '%s/../' % os.path.abspath(
@@ -10,6 +12,7 @@ basepath = '%s/../' % os.path.abspath(
 sys.path.append('%s/lib' % basepath)
 
 from db import *
+from default_dict import DefaultDict
 
 host = '0.0.0.0'
 port = 8081
@@ -159,10 +162,40 @@ def update_job_progress(request,job_id,progress) :
 def status(request) :
     return Job.json()
 
-
 @post('/submit_job')
 def submit_job(request) :
-    return ''.join([ "<p>%s =&gt; %s</p>" % x for x in request.POST.items() ])
+    params = DefaultDict('', request.POST.items())
+    grids = [
+        x.group(1) for x in
+            [ re.match(r'^grid_(.+)',y) for y in params.keys() ]
+        if x
+    ]
+    markers = [
+        x.group(1) for x in
+            [ re.match(r'^marker_(.+)',y) for y in params.keys() ]
+        if x
+    ]
+    session.add(Scenario(
+        grids=[ Grid.query.filter_by(name=key) for key in grids ],
+        markers=[ Marker.query.filter_by(name=key) for key in markers ],
+        jobs=[ Job(
+            person=params['person'],
+            name=params['name'],
+            description=params['description'],
+            nodes=int(params['nodes']),
+            node_type=NodeType(params['node_type']),
+            qtype=params['qtype'],
+            status='pending',
+            progress=0.0
+        ) ],
+        modeling_time=0.0,
+        **dict((key,float(params[key])) for key in """
+            time_step output_step sea_level bottom_friction
+            earth_radius earth_gravity earth_rotation
+        """.split())
+    ))
+    session.commit()
+    return 'ok'
 
 if __name__ == '__main__' :
     import sys, os
