@@ -83,7 +83,9 @@ def ingest_grids() :
     from sqlalchemy.exc import OperationalError
     dangling = {}
     for g in grids :
+
         sleep()
+
         
         p = g['parent']
         
@@ -135,7 +137,9 @@ def ingest_deformations() :
     import time
     dangling = []
     for d in deformations :
+
         sleep()
+
         extent = d['extent']
         
         for p in d['param'] :
@@ -192,7 +196,9 @@ def ingest_markers() :
             
             session.add(marker)
         session.commit()
+
         sleep()
+
     session.flush()
 
 def ingest() :

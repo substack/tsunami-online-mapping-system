@@ -155,6 +155,10 @@ def update_job_progress(request,job_id,progress) :
     Job.get_by(id=job_id).progress = float(progress)
     session.commit()
     return 'ok'
+@get('/control/jobs/status')
+def status(request) :
+    return Job.json()
+
 
 @post('/submit_job')
 def submit_job(request) :
