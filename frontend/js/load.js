@@ -188,13 +188,17 @@ function drawGrids(map) {
     }
     
     grids.each(function (name,grid) {
-        grid.polygon = new google.maps.Polygon([
-            new google.maps.LatLng(grid.north, grid.west),
-            new google.maps.LatLng(grid.north, grid.east),
-            new google.maps.LatLng(grid.south, grid.east),
-            new google.maps.LatLng(grid.south, grid.west),
-            new google.maps.LatLng(grid.north, grid.west)
-        ]);
+        grid.polygon = new google.maps.Polygon(
+            [ // latlngs
+                new google.maps.LatLng(grid.north, grid.west),
+                new google.maps.LatLng(grid.north, grid.east),
+                new google.maps.LatLng(grid.south, grid.east),
+                new google.maps.LatLng(grid.south, grid.west),
+                new google.maps.LatLng(grid.north, grid.west)
+            ],
+            "red", 2, 0.6, // stroke color, weight, opacity
+            "red", 0.08 // fill color, opacity
+        );
     });
     
     function gridList(gs) {
@@ -211,8 +215,6 @@ function drawGrids(map) {
                                 if ($(this).attr("checked")) {
                                     map.addOverlay(grid.polygon);
                                     var parent = with_id(grid.parent_id);
-                                    console.log(grid.parent_id);
-                                    console.log(parent);
                                     if (parent) {
                                         $("#grid_" + parent[1].name)
                                             .attr("checked",true)
