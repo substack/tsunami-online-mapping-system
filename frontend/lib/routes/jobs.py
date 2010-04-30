@@ -1,12 +1,17 @@
 from __common__ import *
+import re
 
 @get('/data/jobs')
 def jobs(request) :
     return Job.json()
 
-@get('/data/jobs/pending')
-def pending_jobs(request) :
-    return Job.json(Job.query.filter_by(status='pending'))
+@get('/data/jobs/(?P<status>pending|removing|archiving|resuming|pausing)')
+def jobs_by_status_ing(request, status) :
+    return Job.json(Job.query.filter_by(status=status))
+
+@get('/data/jobs/(?P<status>removed|archived|resumed|paused)')
+def jobs_by_status_ed(request, status) :
+    return Job.json(Job.query.filter_by(status=status))
 
 @get('/data/jobs/(?P<job_id>\d+)/update/status/(?P<status>.*)')
 def update_job_status(request,job_id,status) :
