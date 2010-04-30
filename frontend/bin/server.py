@@ -156,6 +156,10 @@ def update_job_progress(request,job_id,progress) :
     session.commit()
     return 'ok'
 
+@post('/submit_job')
+def submit_job(request) :
+    return ''.join([ "<p>%s =&gt; %s</p>" % x for x in request.POST.items() ])
+
 if __name__ == '__main__' :
     import sys, os
     app = TsunamiApp(basepath)
