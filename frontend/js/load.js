@@ -74,11 +74,11 @@ function drawMarkers(map) {
                 .append(
                     $("<input>")
                         .attr("type", "checkbox")
-                        .attr("name", "marker_" + name)
+                        .attr("name", prefix + name)
                 )
                 .append(
                     $("<label>")
-                        .attr("for", name)
+                        .attr("for", prefix + name)
                         .text(name)
                 )
             ;
