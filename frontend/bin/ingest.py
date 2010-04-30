@@ -140,25 +140,30 @@ def ingest_deformations() :
         
         for p in d['param'] :
             print(p)
-            if Deformation.query.filter_by(name=d['name']).count() == 0 :
-                deformation = Deformation(
-                    name=d['name'],
-                    description='',
-                    user=(p['type'] != ''),
-                    # bounding box:
-                    west=extent[1],
-                    south=extent[2],
-                    east=extent[0],
-                    north=extent[3],
-                    # deformation parameters:
-                    **dict(zip("""
-                        longitude latitude depth
-                        strike dip rake
-                        slip length width
-                    """.split(), p['params']))
-                )
-                session.add(deformation)
-                session.commit()
+            if Deformation.query.filter_by(name=d['name']).count() == 1 :
+                deformation = Deformation.query \
+                    .filter_by(name=d['name']).first()
+            else :
+                deformation = Deformation()
+            
+            deformation.name = d['name']
+            deformation.description = ''
+            deformation.user = (p['type'] != '')
+            # bounding box:
+            deformation.west, deformation.south, \
+                deformation.east, deformation.north \
+                    = [ extent[i] for i in [1,2,0,3] ]
+            # deformation parameters:
+            fields = zip(
+                "longitude latitude depth strike dip rake slip length width" \
+                    .split(),
+                p['params']
+            )
+            for (field,value) in fields :
+                setattr(deformation, field, value)
+            
+            session.merge(deformation)
+        session.commit()
     session.flush()
 
 def ingest_markers() :
@@ -173,23 +178,27 @@ def ingest_markers() :
             if not group : group = Group(name=group_name)
             grid = Grid.query.filter_by(name=grid_name).first()
             
-            marker = Marker(
-                name=name,
-                description=desc,
-                grid=grid,
-                group=group,
-                longitude=lon,
-                latitude=lat,
-            )
+            if Marker.query.filter_by(name=name).count() == 1 :
+                marker = Marker.query.filter_by(name=name).first()
+            else :
+                marker = Marker()
+            
+            marker.name = name
+            marker.description = desc
+            marker.grid = grid
+            marker.group = group
+            marker.longitude = lon
+            marker.latitude = lat
+            
             session.add(marker)
         session.commit()
         sleep()
     session.flush()
 
 def ingest() :
-    #ingest_grids()
+    ingest_grids()
     ingest_deformations()
-    #ingest_markers()
+    ingest_markers()
     print(
         'Ingest complete:\n    %d grids, %d deformations, %d markers, %d groups'
         % tuple(x.query.count() for x in [Grid,Deformation,Marker,Group])
