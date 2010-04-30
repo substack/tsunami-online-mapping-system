@@ -84,7 +84,7 @@ class Grid(Entity,JSON) :
     points = OneToMany('Point') # has many boundary points
     parent = ManyToOne('Grid') # has one parent
     children = OneToMany('Grid') # has many children
-    markers = OneToMany('Marker') # has many markers
+    scenario = ManyToMany('Scenario')
     
     # bounding box
     west = Column(Float)
@@ -104,10 +104,11 @@ class Marker(Entity,JSON) :
     
     name = Column(String)
     description = Column(String, nullable=True)
-    grid = ManyToOne('Grid')
-    group = ManyToOne('Group')
+    scenario = ManyToMany('Scenario')
     longitude = Column(Float)
     latitude = Column(Float)
+    
+    group = ManyToOne('Group')
  
 class Job(Entity,JSON) :
     __tablename__ = 'jobs'
@@ -145,9 +146,9 @@ class Scenario(Entity,JSON) :
     earth_radius = Column(Float) # meters
     earth_gravity = Column(Float) # m/(s*s)
     earth_rotation = Column(Float) # Hz
-    # each scenario has one grid and one earthquake
-    grid = ManyToOne('Grid')
-    earthquake = ManyToOne('Deformation')
+    grids = ManyToMany('Grid')
+    markers = ManyToMany('Marker')
+    deformation = ManyToOne('Deformation')
     # a scenario can be submitted multiple times potentially
     # when the processing fails for some reason
     jobs = OneToMany('Job')
