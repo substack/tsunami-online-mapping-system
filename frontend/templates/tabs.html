@@ -1,14 +1,15 @@
 <div id="tabs">
     <ul id="tabs-bar">
-        <li><a href="#deformation-tab">deformation</a></li>
+        <li><a href="#params-tab">params</a></li>
         <li><a href="#constants-tab">constants</a></li>
         <li><a href="#markers-tab">markers</a></li>
         <li><a href="#grids-tab">grids</a></li>
         <li><a href="#submit-tab">submit</a></li>
+        <li><a href="#admin-tab">admin</a></li>
     </ul>
     <form action="/create_scenario" method="post">
-        <div id="deformation-tab" class="tab">
-            {% include "tabs/deformation.html" %}
+        <div id="params-tab" class="tab">
+            {% include "tabs/params.html" %}
         </div>
         
         <div id="constants-tab" class="tab">
@@ -27,4 +28,7 @@
             {% include "tabs/submit.html" %}
         </div>
     </form>
+    <div id="admin-tab" class="tab">
+        {% include "tabs/admin.html" %}
+    </div>
 </div>
