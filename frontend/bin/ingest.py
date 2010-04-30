@@ -85,7 +85,6 @@ def ingest_grids() :
     for g in grids :
         sleep()
         
-        mm = g['mm']
         p = g['parent']
         
         parent = None
@@ -97,17 +96,30 @@ def ingest_grids() :
         
         print(g)
         
-        grid = Grid(
-            name=g['name'],
-            description=g['readme'][0],
-            points=[
-                Point(latitude=lat, longitude=lon)
-                for (lat,lon) in g['extent']
-            ],
-            parent=parent,
-            west=mm[0], east=mm[1], south=mm[2], north=mm[3],
-        )
-        session.add(grid)
+        if Grid.query.filter_by(name=g['name']).count() == 0 :
+            # grid doesn't exist, create a new one
+            print("Creating new grid")
+            grid = Grid()
+        else :
+            print("Updating existing grid")
+            grid = Grid.query.filter_by(name=g['name']).first()
+        
+        grid.name = g['name']
+        grid.description = g['readme'][0]
+        
+        if grid.points :
+            # don't add duplicate points
+            prev_ext = [ (p.lat,p.lon) for p in grid.points ]
+            if sort(prev_ext) == sort(g['extent']) :
+                grid.points=[
+                    Point(latitude=lat, longitude=lon)
+                    for (lat,lon) in g['extent']
+                ]
+        
+        grid.parent = parent
+        grid.west, grid.east, grid.south, grid.north = g['mm']
+        
+        session.merge(grid)
         session.commit()
     
     for (parent,names) in dangling.items() :
@@ -175,8 +187,8 @@ def ingest_markers() :
 
 def ingest() :
     ingest_grids()
-    ingest_deformations()
-    ingest_markers()
+    #ingest_deformations()
+    #ingest_markers()
     print(
         'Ingest complete:\n    %d grids, %d deformations, %d markers, %d groups'
         % tuple(x.query.count() for x in [Grid,Deformation,Marker,Group])
