@@ -5,6 +5,7 @@
         <li><a href="#markers-tab">markers</a></li>
         <li><a href="#grids-tab">grids</a></li>
         <li><a href="#submit-tab">submit</a></li>
+        <li><a href="#jobs-tab">jobs</a></li>
         <li><a href="#admin-tab">admin</a></li>
     </ul>
     <form action="/submit_job" method="post">
@@ -28,6 +29,9 @@
             {% include "tabs/submit.html" %}
         </div>
     </form>
+    <div id="jobs-tab" class="tab">
+        {% include "tabs/jobs.html" %}
+    </div>
     <div id="admin-tab" class="tab">
         {% include "tabs/admin.html" %}
     </div>
