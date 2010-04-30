@@ -61,6 +61,7 @@ $(document).ready(function () {
     });
     drawMarkers(map);
     drawGrids(map);
+    updateJobs();
 });
 
 function drawMarkers(map) {
@@ -244,4 +245,30 @@ function drawGrids(map) {
             return grid.parent_id == null;
         })
     ).attr("id", "grids"));
+}
+
+function updateJobs() {
+    $.getJSON('/data/jobs', function (jobs) {
+        $("table#jobs")
+            .empty()
+            .append(
+                $("<tr>").append(
+                    $("<th>").text("id"),
+                    $("<th>").text("name"),
+                    $("<th>").text("status")
+                )
+            )
+        ;
+        
+        $(jobs).each(function (i,job) {
+            $("table#jobs").append(
+                $("<tr>").append(
+                    $("<td>").text(job.id),
+                    $("<td>").text(job.name),
+                    $("<td>").text(job.status)
+                )
+            );
+        });
+        setTimeout(updateJobs, 10 * 1000); // check again after 10 seconds
+    });
 }

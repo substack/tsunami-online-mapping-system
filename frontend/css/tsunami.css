@@ -23,8 +23,8 @@ div#tabs div {
 }
 
 div#tabs form {
-    background-color: rgb(200,200,200);
     padding: 0.5em;
+    background-color: rgb(200,200,200);
     color: black;
 }
 
@@ -110,4 +110,32 @@ div#tabs form table#submit-fields tr td input[type="text"] {
 div#tabs form table#submit-fields tr td textarea {
     width: 25em;
     height: 5em;
+}
+
+div#jobs-tab {
+    background-color: rgb(200,200,200);
+    color: black;
+}
+
+div#jobs-tab table {
+    background-color: rgb(240,240,240);
+    margin-left: 1em;
+}
+
+div#jobs-tab table tr th {
+    background-color: rgb(140,140,140);
+    color: white;
+}
+
+div#jobs-tab table tr td {
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(200,200,200);
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+div#admin-tab {
+    background-color: rgb(200,200,200);
+    color: black;
 }
