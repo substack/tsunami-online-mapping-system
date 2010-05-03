@@ -120,11 +120,18 @@ div#jobs-tab {
 div#jobs-tab table {
     background-color: rgb(240,240,240);
     margin-left: 1em;
+    width: 95%;
 }
 
 div#jobs-tab table tr th {
     background-color: rgb(140,140,140);
     color: white;
+    text-align: left;
+    padding-left: 1em;
+}
+
+div#jobs-tab table tr th.job-status-row {
+    background-color: rgb(160,120,110);
 }
 
 div#jobs-tab table tr td {

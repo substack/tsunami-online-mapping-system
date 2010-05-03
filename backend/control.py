@@ -20,6 +20,12 @@ class Jobs(Data) :
     def pending(cself) : return cself.get('pending')
     
     @classmethod
+    def pending(cself) : return cself.get('running')
+    
+    @classmethod
+    def pending(cself) : return cself.get('finished')
+    
+    @classmethod
     def removing(cself) : return cself.get('removing')
     
     @classmethod

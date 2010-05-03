@@ -248,27 +248,45 @@ function drawGrids(map) {
 }
 
 function updateJobs() {
-    $.getJSON('/data/jobs', function (jobs) {
-        $("table#jobs")
-            .empty()
-            .append(
-                $("<tr>").append(
-                    $("<th>").text("id"),
-                    $("<th>").text("name"),
-                    $("<th>").text("status")
-                )
-            )
-        ;
-        
-        $(jobs).each(function (i,job) {
+    function drawStatus(status,jobs) {
+        var rows = $(jobs)
+            .filter(function (i,job) {
+                return job.status == status;
+            })
+            .map(function (i,job) {
+                return $("<tr>").append(
+                    $("<td>").text(job.id),
+                    $("<td>").text(job.name)
+                );
+            });
+        if (rows.size()) {
             $("table#jobs").append(
                 $("<tr>").append(
-                    $("<td>").text(job.id),
-                    $("<td>").text(job.name),
-                    $("<td>").text(job.status)
+                    $("<th>")
+                        .addClass("job-status-row")
+                        .attr("colspan",2)
+                        .text(status)
+                ),
+                $("<tr>").append(
+                    $("<th>")
+                        .css("width", "4em")
+                        .text("id"),
+                    $("<th>").text("name")
                 )
             );
-        });
+            rows.appendTo("table#jobs");
+        }
+    }
+    
+    $.getJSON('/data/jobs', function (jobs) {
+        $("table#jobs").empty();
+        drawStatus("pending",jobs);
+        drawStatus("running",jobs);
+        drawStatus("finished",jobs);
+        
+        drawStatus("archiving",jobs);
+        drawStatus("archived",jobs);
+        
         setTimeout(updateJobs, 10 * 1000); // check again after 10 seconds
     });
 }
