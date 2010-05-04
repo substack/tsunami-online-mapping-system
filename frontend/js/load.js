@@ -300,7 +300,7 @@ function updateJobs() {
         }
     }
     
-    $.getJSON('/data/jobs', function (jobs) {
+    $.getJSON('/data/jobs/get', function (jobs) {
         $("table#jobs").empty();
         drawStatus("pending",jobs, [
             { value : "remove" }
