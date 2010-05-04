@@ -71,18 +71,29 @@ function drawMarkers(map) {
     
     groups.cons("User", { id : -1, name : "User" }).each(function (name,group) {
         function item (prefix,name,hash,collapse) {
-            return $("<li>")
-                .append(
-                    $("<input>")
-                        .attr("type", "checkbox")
-                        .attr("name", prefix + name)
-                )
-                .append(
-                    $("<label>")
-                        .attr("for", prefix + name)
-                        .text(name)
-                )
-            ;
+            var li = $("<li>").append(
+                $("<input>")
+                    .attr("type", "checkbox")
+                    .attr("name", prefix + name)
+            );
+            if (name.match(/^user_/)) {
+                li.append($("<input>").attr({
+                    type : "text",
+                    value : name,
+                    change : function () {
+                        markers.at(name).name = this.value;
+                        markers.move_(name,this.value);
+                        name = this.value;
+                    }
+                }));
+            }
+            else {
+                li.append($("<label>")
+                    .attr("for", prefix + name)
+                    .text(name)
+                );
+            }
+            return li;
         }
         
         var ul = $("<ul>");
@@ -153,7 +164,9 @@ function drawMarkers(map) {
                         ev.pageY - ev.offsetY + 33
                     )
                 );
-                var name = $("#new-marker-name").val();
+                var name = "user_" + String(markers.filter(function (key,_) {
+                    return key.match(/^user_/)
+                }).length);
                 var marker = {
                     name : name,
                     checked : true,
