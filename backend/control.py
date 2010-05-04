@@ -4,10 +4,8 @@ import urllib
 class Data(object) :
     @classmethod
     def get(cself,part) :
-        raw = urllib.urlopen(
-            "http://localhost:8081/data/%s/%s" % (cself.name(),part)
-        ).read()
-        return json.loads(raw)
+        uri = "http://localhost:8081/data/%s/%s" % (cself.name(),part)
+        return json.loads(urllib.urlopen(uri).read())
     
     @classmethod
     def all(cself) : return cself.get('')
@@ -20,10 +18,10 @@ class Jobs(Data) :
     def pending(cself) : return cself.get('pending')
     
     @classmethod
-    def pending(cself) : return cself.get('running')
+    def running(cself) : return cself.get('running')
     
     @classmethod
-    def pending(cself) : return cself.get('finished')
+    def finished(cself) : return cself.get('finished')
     
     @classmethod
     def removing(cself) : return cself.get('removing')
