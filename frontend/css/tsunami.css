@@ -142,6 +142,10 @@ div#jobs-tab table tr td {
     padding-right: 1em;
 }
 
+div#jobs-tab table tr td input {
+    float: right;
+}
+
 div#admin-tab {
     background-color: rgb(200,200,200);
     color: black;

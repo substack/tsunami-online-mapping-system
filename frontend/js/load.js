@@ -248,17 +248,26 @@ function drawGrids(map) {
 }
 
 function updateJobs() {
-    function drawStatus(status,jobs) {
+    function drawStatus(status,jobs,buttons) {
         var rows = $(jobs)
             .filter(function (i,job) {
                 return job.status == status;
             })
             .map(function (i,job) {
-                return $("<tr>").append(
+                var row = $("<tr>").append(
                     $("<td>").text(job.id),
                     $("<td>").text(job.name)
                 );
-            });
+                $(buttons).map(function (i,button) {
+                    return $("<input>").attr({
+                        type : "button",
+                        value : button.value
+                    });
+                }).appendTo(row.find("td:last"));
+                return row;
+            })
+        ;
+        
         if (rows.size()) {
             $("table#jobs").append(
                 $("<tr>").append(
@@ -280,12 +289,24 @@ function updateJobs() {
     
     $.getJSON('/data/jobs', function (jobs) {
         $("table#jobs").empty();
-        drawStatus("pending",jobs);
-        drawStatus("running",jobs);
-        drawStatus("finished",jobs);
-        
+        drawStatus("pending",jobs, [
+            { value : "remove" }
+        ]);
+        drawStatus("running",jobs, [
+            { value : "stop" }
+        ]);
+        drawStatus("stopped",jobs, [
+            { value : "start" },
+            { value : "remove" }
+        ]);
+        drawStatus("finished",jobs, [
+            { value : "archive" },
+            { value : "remove" }
+        ]);
         drawStatus("archiving",jobs);
-        drawStatus("archived",jobs);
+        drawStatus("archived",jobs, [
+            { value : "unarchive" }
+        ]);
         
         setTimeout(updateJobs, 10 * 1000); // check again after 10 seconds
     });
