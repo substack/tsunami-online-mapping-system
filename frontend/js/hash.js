@@ -70,6 +70,12 @@ function Hash(items) {
         return items[key];
     };
     
+    this.move_ = function (old_key, new_key) {
+        items[new_key] = items[old_key];
+        delete items[old_key];
+        return this;
+    };
+    
     this.sort = function (f) {
         return this.pairs.sort().reduce(function (hash,pair) {
             return hash.cons(pair[0], pair[1]);
@@ -101,5 +107,10 @@ Hash.prototype = {
         return this.foldl(function (acc,_,value) {
             return acc.concat([value]);
         }, [])
+    },
+    get length () {
+        return this.foldl(function (acc,_,_) {
+            return acc + 1;
+        }, 0)
     }
 };
