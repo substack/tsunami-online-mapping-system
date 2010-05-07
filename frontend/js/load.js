@@ -95,11 +95,13 @@ function drawMarkers(map) {
     
     groups.cons("User", { id : -1, name : "User" }).each(function (name,group) {
         function item (prefix,name,hash,collapse) {
-            var li = $("<li>").append(
-                $("<input>")
-                    .attr("type", "checkbox")
-                    .attr("name", prefix + name)
-            );
+            var li = $("<li>")
+                .append(
+                    $("<input>")
+                        .attr("type", "checkbox")
+                        .attr("name", prefix + name)
+                )
+            ;
             if (name.match(/^user_/)) {
                 li.append($("<input>").attr({
                     type : "text",
@@ -115,6 +117,11 @@ function drawMarkers(map) {
                 li.append($("<label>")
                     .attr("for", prefix + name)
                     .text(name)
+                );
+            }
+            if (hash.description) {
+                li.append(
+                    $("<span>").text(" -- " + hash.description)
                 );
             }
             return li;
