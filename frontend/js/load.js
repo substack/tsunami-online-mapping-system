@@ -7,7 +7,11 @@ $(document).ready(function () {
     var map = new google.maps.Map2(canvas.get(0));
     map.setCenter(new google.maps.LatLng(59, -152.1419), 5);
     map.addControl(new google.maps.LargeMapControl());
+    map.addControl(new google.maps.MenuMapTypeControl());
+    
     map.disableDoubleClickZoom();
+    map.addMapType(G_SATELLITE_MAP);
+    map.setMapType(G_SATELLITE_MAP);
     
     var tabs = $("#tabs");
     tabs.tabs({ idPrefix : 'tab' });
