@@ -1,22 +1,26 @@
-<table>
-    <tr>
-        <th>cron interval</th>
-        <td><input
-            id="cron-interval"
-            type="text"
-            value="{{ cron_interval }}"
-        > (minutes)</td>
-        <td><input type="button" value="update" onclick='
-            $("#cron-interval-status").load(
-                "/data/admin/cron-interval/set/" + $("#cron-interval").val(),
-                function (data) {
-                    setTimeout(function () {
-                        // disappear after 3 seconds
-                        $("#cron-interval-status").html("");
-                    }, 3000);
-                }
-            );
-        '></td>
-        <td id="cron-interval-status"></td>
-    </tr>
-</table>
+<form action="#" onsubmit='
+    var status = $("<td>");
+    status.load(
+        "/data/admin/cron-interval/set/" + $("#cron-interval").val(),
+        function (data) {
+            $("tr#cron-option").append(status.html(data));
+            setTimeout(function () {
+                // disappear after 3 seconds
+                status.remove();
+            }, 3000);
+        }
+    );
+    return false;
+'>
+    <table id="admin-options">
+        <tr id="cron-option">
+            <th>cron interval</th>
+            <td><input
+                id="cron-interval"
+                type="text"
+                value="{{ cron_interval }}"
+            > (minutes)</td>
+            <td><input type="submit" value="update"></td>
+        </tr>
+    </table>
+</form>
