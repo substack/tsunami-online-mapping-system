@@ -9,7 +9,7 @@ $(document).ready(function () {
     map.addControl(new google.maps.LargeMapControl());
     map.addControl(new google.maps.MenuMapTypeControl());
     
-    map.disableDoubleClickZoom();
+    //map.disableDoubleClickZoom();
     map.addMapType(G_SATELLITE_MAP);
     map.setMapType(G_SATELLITE_MAP);
     
@@ -232,7 +232,7 @@ function drawGrids(map) {
         });
     }
     
-    grids.each(function (name,grid) {
+    grids.sort().each(function (name,grid) {
         grid.polygon = new google.maps.Polygon(
             [ // latlngs
                 new google.maps.LatLng(grid.north, grid.west),
@@ -244,42 +244,52 @@ function drawGrids(map) {
             "red", 2, 0.6, // stroke color, weight, opacity
             "red", 0.08 // fill color, opacity
         );
+        
+        grid.coastline = new google.maps.GeoXml(
+            "http://burn.giseis.alaska.edu/grids/" + name + ".kml"
+        );
+         
+        $("select#coastline").prepend(
+            $("<option>").val(name).text(name)
+        );
     });
+    
+    $("select#coastline").prepend(
+        $("<option>").val("").text("")
+    );
     
     function gridList(gs) {
         var ul = $("<ul>");
         gs.each(function (name,grid) {
-            ul.append(
-                $("<li>")
-                    .append(
-                        $("<input>")
-                            .attr("type", "checkbox")
-                            .attr("name", "grid_" + name)
-                            .attr("id", "grid_" + name)
-                            .change(function () {
-                                if ($(this).attr("checked")) {
-                                    map.addOverlay(grid.polygon);
-                                    var parent = with_id(grid.parent_id);
-                                    if (parent) {
-                                        $("#grid_" + parent[1].name)
-                                            .attr("checked",true)
-                                            .change();
-                                    }
-                                }
-                                else {
-                                    map.removeOverlay(grid.polygon);
-                                    children(grid).each(function (n,g) {
-                                        $("#grid_" + g.name)
-                                            .attr("checked",false)
-                                            .change();
-                                    });
-                                }
-                            })
-                    )
-                    .append($("<span>").addClass("grid-name").text(name))
-                    .append($("<span>").text(grid.description))
-                    .append(gridList(children(grid)))
-            );
+            ul.append($("<li>").append(
+                $("<input>")
+                    .attr("type", "checkbox")
+                    .attr("name", "grid_" + name)
+                    .attr("id", "grid_" + name)
+                    .change(function () {
+                        if ($(this).attr("checked")) {
+                            map.addOverlay(grid.polygon);
+                            var parent = with_id(grid.parent_id);
+                            if (parent) {
+                                $("#grid_" + parent[1].name)
+                                    .attr("checked",true)
+                                    .change();
+                            }
+                        }
+                        else {
+                            map.removeOverlay(grid.polygon);
+                            children(grid).each(function (n,g) {
+                                $("#grid_" + g.name)
+                                    .attr("checked",false)
+                                    .change();
+                            });
+                        }
+                    })
+                ,
+                $("<span>").addClass("grid-name").text(name),
+                $("<span>").text(grid.description),
+                gridList(children(grid))
+            ));
         });
         return ul;
     }
@@ -289,6 +299,17 @@ function drawGrids(map) {
             return grid.parent_id == null;
         })
     ).attr("id", "grids"));
+    
+    $("select#coastline").change(function () {
+        grids.each(function (i,g) {
+            map.removeOverlay(g.coastline);
+        });
+        
+        if ($(this).val().length) {
+            var grid = grids.at($(this).val())
+            map.addOverlay(grid.coastline);
+        }
+    });
 }
 
 function updateJobs() {

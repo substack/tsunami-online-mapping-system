@@ -15,10 +15,10 @@
                 <option value=""></option>
             </select>
         </td>
-        <th rowspan="3">
+        <th rowspan="4">
             priority <br> lists
         </th>
-        <td rowspan="3" id="priority-lists"></td>
+        <td rowspan="4" id="priority-lists"></td>
     </tr>
     <tr>
         <th>
@@ -28,11 +28,12 @@
             <input type="text" name="time_step" value="1.0">
             seconds
         </td>
+        
         <th>
-            <label for="bottom_friction">Bottom Friction</label>
+            <label for="coastline">Coastline</label>
         </th>
         <td>
-            <input type="text" name="bottom_friction" value="0.03">
+            <select name="coastline" id="coastline"></select>
         </td>
     </tr>
     <tr>
@@ -54,6 +55,14 @@
                 <option value="pre">pre-earthquake</option>
                 <option value="post">post-earthquake</option>
             </select>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <label for="bottom_friction">Bottom Friction</label>
+        </th>
+        <td>
+            <input type="text" name="bottom_friction" value="0.03">
         </td>
     </tr>
 </table>
