@@ -28,7 +28,7 @@ def update_job_progress(request,job_id,progress) :
     session.commit()
     return 'ok'
 
-@post('/submit_job')
+@post('/submit-job')
 def submit_job(request) :
     params = DefaultDict('', request.POST.items())
     grids = [

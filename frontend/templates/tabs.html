@@ -8,7 +8,25 @@
         <li><a href="#jobs-tab">jobs</a></li>
         <li><a href="#admin-tab">admin</a></li>
     </ul>
-    <form action="/submit_job" method="post">
+    <form id="params-form" action="/submit-job" method="post" onsubmit='
+        var params = $(this).serializeArray().reduce(function (acc,x) {
+            acc[x.name] = x.value;
+            return acc;
+        }, {})
+        var status = $("<td>");
+        status.load(
+            "/submit-job",
+            params,
+            function (data) {
+                $("tr#submit-row").append(status.html(data));
+                setTimeout(function () {
+                    // disappear after 3 seconds
+                    status.remove();
+                }, 3000);
+            }
+        );
+        return false;
+    '>
         <div id="params-tab" class="tab">
             {% include "tabs/params.html" %}
         </div>
