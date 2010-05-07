@@ -152,3 +152,9 @@ class Scenario(Entity,JSON) :
     # a scenario can be submitted multiple times potentially
     # when the processing fails for some reason
     jobs = OneToMany('Job')
+
+class Option(Entity,JSON) :
+    # simple key/value store for options like cron frequency
+    __tablename__ = 'options'
+    key = Column(String, primary_key=True)
+    value = Column(String, nullable=True)

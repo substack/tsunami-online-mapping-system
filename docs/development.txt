@@ -34,6 +34,7 @@ Routes:
     
     frontend/bin/server.py
     frontend/lib/routes/
+        admin.py
         deformations.py
         grids.py
         jobs.py
