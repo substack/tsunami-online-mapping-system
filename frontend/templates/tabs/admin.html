@@ -1,6 +1,22 @@
-administration stuff goes here
-<form action="/admin/update-cron-interval">
-cron interval
-<input type="text"> (minutes)
-<input type="submit" value="update">
-</form>
+<table>
+    <tr>
+        <th>cron interval</th>
+        <td><input
+            id="cron-interval"
+            type="text"
+            value="{{ cron_interval }}"
+        > (minutes)</td>
+        <td><input type="button" value="update" onclick='
+            $("#cron-interval-status").load(
+                "/data/admin/cron-interval/set/" + $("#cron-interval").val(),
+                function (data) {
+                    setTimeout(function () {
+                        // disappear after 3 seconds
+                        $("#cron-interval-status").html("");
+                    }, 3000);
+                }
+            );
+        '></td>
+        <td id="cron-interval-status"></td>
+    </tr>
+</table>
