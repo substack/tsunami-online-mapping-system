@@ -140,7 +140,46 @@ function drawMarkers(map) {
                     m.checked = $(this).attr("checked");
                     if (m.checked) {
                         m.marker = new google.maps.Marker(
-                            new google.maps.LatLng(m.latitude, m.longitude)
+                            new google.maps.LatLng(m.latitude, m.longitude),
+                            { draggable : true, dragCrossMove : true }
+                        );
+                        
+                        google.maps.Event.addListener(m.marker, "dragend",
+                            function (pos) {
+                                // set the marker back to its old position and
+                                // hide it
+                                m.marker.setLatLng(new google.maps.LatLng(
+                                    m.latitude, m.longitude
+                                ));
+                                m.checked = false;
+                                map.removeOverlay(m.marker);
+                                
+                                // so that a new user marker can take its place
+                                m.marker.hide();
+                                var ico = new google.maps.Icon(G_DEFAULT_ICON);
+                                ico.image = "/images/green-marker.png";
+                                
+                                var userMarker = {
+                                    name : name,
+                                    checked : true,
+                                    group_id : -1,
+                                    latitude : pos.lat(),
+                                    longitude : pos.lng(),
+                                    mutable : true,
+                                    marker : new google.maps.Marker(pos, {
+                                        draggable : true,
+                                        dragCrossMove : true,
+                                        icon : ico
+                                    })
+                                };
+                                console.log("user_" + name);
+                                console.log(pos.lat() + ", " + pos.lng());
+                                markers = markers.cons("user_" + name, userMarker);
+                                drawMarkers(map);
+                                map.addOverlay(userMarker.marker);
+                                
+                                console.log(pos);
+                            }
                         );
                         map.addOverlay(m.marker);
                     }
