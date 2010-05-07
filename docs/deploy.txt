@@ -1,0 +1,46 @@
+Getting the code:
+    With git installed, clone the repository with:
+    
+    git clone http://github.com/substack/tsunami-online-mapping-system 
+
+Installation requirements:
+    python-2.6
+    
+    pip # to install python packages
+        http://pypi.python.org/pypi/pip
+    
+    sqlite3 # file-based database
+        http://sqlite.org/
+    
+    python libs:
+        # For each of these: sudo pip install $name
+        itty # web microframework
+        jinja2 # template engine
+        sqlite3 # database library
+        sqlalchemy # object relational mapper
+        elixir # declarative layer for sqlalchemy
+
+Running the service:
+    To use as a standalone service:
+        python frontend/bin/server.py
+    By default, the server will bind to 0.0.0.0:8081, which can be changed near
+    the top of server.py
+    
+    It's possible to tie together any wsgi app with apache, but this was not
+    explored. More info at:
+        http://code.google.com/p/modwsgi/ 
+
+Ingesting data:
+    The ingest script at "frontend/bin/ingest.py" loads data from the old website
+    into the new database. Specifically, deformations, grids, and markers are
+    loaded from:
+    
+        http://burn.giseis.alaska.edu/deformations/
+        http://burn.giseis.alaska.edu/grids/
+        http://burn.giseis.alaska.edu/scripts/
+    
+    Executing this script repeatedly will update existing pieces
+    of data but will not add duplicate entries. If a file disappears from the
+    old website it will not be deleted from the new database.
+    
+    Separately, import the png overlay files into "frontend/overlays".

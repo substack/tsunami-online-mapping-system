@@ -1,0 +1,68 @@
+Database:
+    The SQLite database lives at "frontend/data/tsunami.sqlite3".
+    The sqlite3 command can be used to inspect, query, and update the database.
+    
+    Here's an example of usage:
+    
+    $ sqlite3 frontend/data/tsunami.sqlite3 
+    SQLite version 3.6.23.1
+    Enter ".help" for instructions
+    Enter SQL statements terminated with a ";"
+    sqlite> select * from model_grid limit 5;
+    1|AK15|15 meter grid|39|194.1667901|54.1082222|194.2998765|54.1584444
+    2|AO15|15 meter grid|22|139.4341975|42.0311852|139.4998765|42.0725185
+    3|AU08|8 arc-second grid|4|190.5811111|52.6211111|194.9522222|54.3855556
+    4|AU24|24 arc-second grid|25|188.0366667|52.0033333|202.9633333|57.4633333
+    5|CB15e|15 meter grid|13|197.2201235|55.1497037|197.4198765|55.2502963
+    
+    The tables are generated automatically by "frontend/lib/model.py".
+    However, updates to this file will not automatically update the database
+    schema if the database file already exists.
+    
+    To load the python ORM interface to the database, database, in
+    "frontend/bin", execute:
+        
+        python -i shell.py
+    
+    Graphical tools also exist for browsing sqlite3 databases, such as
+        http://sqlitebrowser.sourceforge.net/
+
+Routes:
+    Routes map uris such as "/data/jobs/get" to actions.
+    With itty, routes use the @get and @post decorators.
+    Routes are defined in these files:
+    
+    frontend/bin/server.py
+    frontend/lib/routes/
+        deformations.py
+        grids.py
+        jobs.py
+        markers.py
+        points.py
+        priority_lists.py
+        scenarios.py
+    
+    To add a new routes script, import it from "frontend/lib/routes/__init__.py".
+
+Communication:
+    The backend processing systems can communicate with the website by using
+    the routes defined in "frontend/lib/routes".
+    
+    For instance, to get the list of all jobs in JSON format:
+        http://localhost:8081/data/jobs/get
+    
+    or to get only the jobs which are pending:
+        http://localhost:8081/data/jobs/get/status/pending
+    
+    To update the status of a job:
+        http://localhost:8081/data/jobs/set/2/status/stopped
+    where "2" is the job id and "stopped" is its new status.
+
+HTML templates:
+    Jinja2 (http://jinja.pocoo.org/2/documentation/) is used to render HTML templates.
+    The templates in "frontend/templates" are loaded and rendered by
+    "frontend/bin/server.py".
+    
+    To add a new tab to the interface,
+        * make a new html file in "frontend/templates/tabs"
+        * add a new list item and div for the new tab.
