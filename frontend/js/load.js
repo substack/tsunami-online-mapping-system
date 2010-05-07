@@ -172,13 +172,8 @@ function drawMarkers(map) {
                                         icon : ico
                                     })
                                 };
-                                console.log("user_" + name);
-                                console.log(pos.lat() + ", " + pos.lng());
                                 markers = markers.cons("user_" + name, userMarker);
-                                drawMarkers(map);
                                 map.addOverlay(userMarker.marker);
-                                
-                                console.log(pos);
                             }
                         );
                         map.addOverlay(m.marker);
@@ -237,6 +232,10 @@ function drawMarkers(map) {
                 var name = "user_" + String(markers.filter(function (key,_) {
                     return key.match(/^user_/)
                 }).length);
+                
+                var ico = new google.maps.Icon(G_DEFAULT_ICON);
+                ico.image = "/images/green-marker.png";
+                
                 var marker = {
                     name : name,
                     checked : true,
@@ -246,7 +245,8 @@ function drawMarkers(map) {
                     mutable : true,
                     marker : new google.maps.Marker(pt, {
                         draggable : true,
-                        dragCrossMove : true
+                        dragCrossMove : true,
+                        icon : ico
                     })
                 };
                 markers = markers.cons(name, marker);
