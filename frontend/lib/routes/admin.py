@@ -2,7 +2,7 @@ from __common__ import *
 
 @get('/data/admin/cron-interval/get')
 def cron_interval(request) :
-    opt = Option.query.filter_by(key='cron-interval').first()
+    opt = Option.get_by(key='cron-interval')
     if opt :
         return str(opt.value)
     else :
@@ -10,7 +10,7 @@ def cron_interval(request) :
 
 @get(r'/data/admin/cron-interval/set/(?P<interval>\d+)')
 def update_cron_interval(request,interval) :
-    opt = Option.query.filter_by(key='cron-interval').first()
+    opt = Option.get_by(key='cron-interval')
     if not opt :
         opt = Option(key='cron-interval')
         session.add(opt)
