@@ -38,6 +38,26 @@ $(document).ready(function () {
     });
     $(window).resize();
     
+    $.getJSON("/data/priority-lists/get", function (data) {
+        $(data).map(function (i,x) {
+            var overlay = new GGeoXml(x.kml);
+            return $("<p>")
+                .text(x.name)
+                .append($("<input>")
+                    .attr("type","checkbox")
+                    .change(function () {
+                        if ($(this).attr("checked")) {
+                            map.addOverlay(overlay);
+                        }
+                        else {
+                            map.removeOverlay(overlay);
+                        }
+                    })
+                )
+            ;
+        }).appendTo($("#priority-lists"));
+    });
+    
     deformations.each(function (name,def) {
         def.overlay = new google.maps.GroundOverlay(
             "/overlays/" + name + ".png",
