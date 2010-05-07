@@ -28,6 +28,12 @@ def update_job_progress(request,job_id,progress) :
     session.commit()
     return 'ok'
 
+@get('/data/jobs/delete/(?P<job_id>\d+)')
+def delete_job(request,job_id) :
+    session.delete(Job.get_by(id=job_id))
+    session.commit()
+    return 'ok'
+
 @post('/submit-job')
 def submit_job(request) :
     params = DefaultDict('', request.POST.items())

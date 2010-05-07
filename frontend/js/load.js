@@ -296,10 +296,21 @@ function updateJobs() {
                     $("<td>").text(job.name)
                 );
                 $(buttons).map(function (i,button) {
-                    return $("<input>").attr({
-                        type : "button",
-                        value : button.value
-                    });
+                    return $("<input>")
+                        .attr("type","button")
+                        .val(button.value)
+                        .click(function () {
+                            if (button.value == "remove") {
+                                $.get(
+                                    "/data/jobs/delete/" + job.id,
+                                    function (data) {
+                                        if (data == "ok") row.remove();
+                                        else alert(data);
+                                    }
+                                );
+                            }
+                        })
+                    ;
                 }).appendTo(row.find("td:last"));
                 return row;
             })
@@ -326,6 +337,7 @@ function updateJobs() {
     
     $.getJSON('/data/jobs/get', function (jobs) {
         $("table#jobs").empty();
+        
         drawStatus("pending",jobs, [
             { value : "remove" }
         ]);
