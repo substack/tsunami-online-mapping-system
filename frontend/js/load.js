@@ -300,15 +300,15 @@ function updateJobs() {
                         .attr("type","button")
                         .val(button.value)
                         .click(function () {
-                            if (button.value == "remove") {
-                                $.get(
-                                    "/data/jobs/delete/" + job.id,
-                                    function (data) {
-                                        if (data == "ok") row.remove();
-                                        else alert(data);
+                            $.get(
+                                "/data/jobs/" + button.value + "/" + job.id,
+                                function (data) {
+                                    if (data == "ok") {
+                                        if (button.value == "remove") row.remove();
                                     }
-                                );
-                            }
+                                    else alert(data);
+                                }
+                            );
                         })
                     ;
                 }).appendTo(row.find("td:last"));
@@ -339,6 +339,14 @@ function updateJobs() {
         $("table#jobs").empty();
         
         drawStatus("pending",jobs, [
+            { value : "remove" }
+        ]);
+        drawStatus("starting",jobs, [
+            { value : "stop" },
+            { value : "remove" }
+        ]);
+        drawStatus("stopping",jobs, [
+            { value : "stop" },
             { value : "remove" }
         ]);
         drawStatus("running",jobs, [

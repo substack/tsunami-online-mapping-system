@@ -28,9 +28,21 @@ def update_job_progress(request,job_id,progress) :
     session.commit()
     return 'ok'
 
-@get('/data/jobs/delete/(?P<job_id>\d+)')
+@get('/data/jobs/remove/(?P<job_id>\d+)')
 def delete_job(request,job_id) :
     session.delete(Job.get_by(id=job_id))
+    session.commit()
+    return 'ok'
+
+@get('/data/jobs/start/(?P<job_id>\d+)')
+def start_job(request,job_id) :
+    Job.get_by(id=job_id).status = 'starting'
+    session.commit()
+    return 'ok'
+
+@get('/data/jobs/stop/(?P<job_id>\d+)')
+def start_job(request,job_id) :
+    Job.get_by(id=job_id).status = 'stopping'
     session.commit()
     return 'ok'
 
