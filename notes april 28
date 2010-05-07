@@ -13,7 +13,7 @@ Create Deformation button functionality
 	length
 -have multiple faults in a single deformation
 -have name of deformation
--need user login to create deformation
+-need user login to create deformation <-- non-trivial
 -called "input name".param
 -processed on frontnode, about five mins
 -"need" to view the inforamtion (export)
@@ -21,7 +21,7 @@ Create Deformation button functionality
 add shoreline information
 -note: the sea level/post earthquake is information that needs to be submitted to job
 
-make box boundries thinner (and red to diferentiate from shorelines)
+(DONE) make box boundries thinner (and red to diferentiate from shorelines)
 
 documentation on how to...
 	add new button
