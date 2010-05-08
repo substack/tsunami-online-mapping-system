@@ -20,9 +20,9 @@
             function (data) {
                 $("tr#submit-row").append(status.html(data));
                 setTimeout(function () {
-                    // disappear after 3 seconds
+                    // disappear after 10 seconds
                     status.remove();
-                }, 3000);
+                }, 10000);
             }
         );
         return false;

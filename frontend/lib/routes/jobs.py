@@ -59,24 +59,40 @@ def submit_job(request) :
             [ re.match(r'^marker_(.+)',y) for y in params.keys() ]
         if x
     ]
+    
+    keys = """
+        time_step output_step sea_level bottom_friction earth_radius
+        earth_gravity earth_rotation
+    """.split()
+    
+    skeys = """
+        person name description nodes node_type queue_type
+    """.split()
+    
+    missing = [ key for key in keys + skeys if not params.has_key(key) ]
+    if missing : return 'Empty parameters: %s' % ' '.join(missing)
+    
     session.add(Scenario(
-        grids=[ Grid.query.filter_by(name=key) for key in grids ],
-        markers=[ Marker.query.filter_by(name=key) for key in markers ],
+        grids=filter(
+            lambda x : x is not None,
+            [ Grid.query.filter_by(name=key) for key in grids ]
+        ),
+        markers=filter(
+            lambda x : x is not None,
+            [ Marker.query.filter_by(name=key) for key in markers ]
+        ),
         jobs=[ Job(
             person=params['person'],
             name=params['name'],
             description=params['description'],
             nodes=int(params['nodes']),
             node_type=NodeType(params['node_type']),
-            qtype=params['qtype'],
+            qtype=params['queue_type'],
             status='pending',
             progress=0.0
         ) ],
         modeling_time=0.0,
-        **dict((key,float(params[key])) for key in """
-            time_step output_step sea_level bottom_friction
-            earth_radius earth_gravity earth_rotation
-        """.split())
+        **dict((key,float(params[key])) for key in keys)
     ))
     session.commit()
     return 'ok'
