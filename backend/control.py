@@ -1,3 +1,5 @@
+# defines the data that can be requested from and sent to the server
+
 import simplejson as json
 import urllib
 
