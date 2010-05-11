@@ -16,8 +16,8 @@ function Marker(map,params) {
         draggable : true,
         dragCrossMove : true,
         icon : (marker.mutable
-            ? new google.maps.Icon(G_DEFAULT_ICON) // default pinkish icon
-            : new google.maps.Icon(G_DEFAULT_ICON, "/images/green-marker.png")
+            ? new google.maps.Icon(G_DEFAULT_ICON, "/images/green-marker.png")
+            : new google.maps.Icon(G_DEFAULT_ICON) // default pinkish icon
         )
     });
     
@@ -87,7 +87,12 @@ function MarkerRow(map,marker) {
             marker.gMarker, "dragend",
             function (pos) {
                 // set the marker back to its old position and hide it
-                gMarker.setLatLng(marker.position);
+                marker.gMarker.setLatLng(
+                    new google.maps.LatLng(
+                        marker.latitude, marker.longitude
+                    )
+                );
+                marker.hide();
                 
                 // add the new marker to the user group
                 var row = new MarkerRow(
