@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# import environment data from existing system to new database
+
 # add lib to search path
 import sys, os
 if sys.argv[0] == '' : sys.argv[0] = './'

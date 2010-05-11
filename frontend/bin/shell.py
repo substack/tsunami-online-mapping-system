@@ -1,4 +1,5 @@
 # Execute with: python -i shell.py
+# alternative script for accessing data in the database
 
 import os,sys
 # add lib to search path

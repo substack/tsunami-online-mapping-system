@@ -1,4 +1,6 @@
 #!/usr/bin/env python2.6
+# serves up the web page and responds to data requests
+
 from itty import *
 from jinja2 import Environment, Template, FileSystemLoader
 
