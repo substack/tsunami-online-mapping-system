@@ -15,7 +15,7 @@ function Marker(map,params) {
     this.gMarker = new google.maps.Marker(position, {
         draggable : true,
         dragCrossMove : true,
-        icon : (this.mutable
+        icon : (marker.mutable
             ? new google.maps.Icon(G_DEFAULT_ICON) // default pinkish icon
             : new google.maps.Icon(G_DEFAULT_ICON, "/images/green-marker.png")
         )
@@ -38,10 +38,14 @@ function MarkerRow(map,marker) {
     var checkbox = $("<input>")
         .attr("type", "checkbox")
         .attr("name", "marker_" + marker.name)
-        .toggle(
-            function () { marker.hide() },
-            function () { marker.show() }
-        )
+        .change(function () {
+            if ($(this).attr("checked")) {
+                marker.show();
+            }
+            else {
+                marker.hide();
+            }
+        })
     ;
     var nameOrBox = marker.mutable
         ? $("<input>")
@@ -55,15 +59,14 @@ function MarkerRow(map,marker) {
             })
         : $("<span>").text(marker.name)
     ;
-    var maybeDesc = marker.mutable
-        ? $("<span>")
-        : $("<span>").text(marker.description)
-    ;
+    var desc = $("<span>").text(marker.description);
     
     this.tr = $("<tr>").append(
         $("<td>").append(checkbox),
         $("<td>").append(nameOrBox),
-        $("<td>").append(maybeDesc)
+        $("<td>")
+            .css("min-width","5em")
+            .append(desc)
     );
     
     this.hide = function () {
@@ -106,14 +109,13 @@ function MarkerRow(map,marker) {
 function MarkerGroup(map,group,markers) {
     this.expand = function () {
         img.attr("src", "/images/expanded.png");
-        table.css("visibility","visible");
+        table.hide();
         return this;
     };
     
     this.collapse = function () {
-        $(this.elem).removeClass("expanded");
         img.attr("src", "/images/collapsed.png");
-        table.css("visibility","hidden");
+        table.show();
         return this;
     }
     
@@ -125,13 +127,13 @@ function MarkerGroup(map,group,markers) {
     
     var table = $("<table>").attr("id", "group_" + group.id);
     
-    $(markers.map(function (i,marker) {
+    markers.each(function (i,marker) {
         var row = new MarkerRow(map, new Marker(map,marker));
-        return row.tr;
-    })).appendTo(table);
+        table.append(row.tr);
+    });
     
     var img = $("<img>");
-    img.toggle(this.expand,this.collapse);
+    img.toggle(this.collapse,this.expand);
     
     var label = $("<label>")
         .attr("for", checkbox.attr("name"))
@@ -139,5 +141,7 @@ function MarkerGroup(map,group,markers) {
         .toggle(this.expand,this.collapse)
     ;
     
-    this.elem = $("<div>").append(img, checkbox, label, table);
+    var div = $("<div>").append(img, checkbox, label, table);
+    this.elem = div;
+    this.collapse();
 }

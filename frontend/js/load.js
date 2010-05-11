@@ -39,7 +39,9 @@ $(document).ready(function () {
     $(window).resize();
     
     $("div#marker-groups").append(
-        (new MarkerGroup(map,{id : -1, name : "user"},[])).elem
+        (new MarkerGroup(
+            map, {id : -1, name : "user"}, new Hash()
+        )).elem
     );
     
     groups.each(function (acc,group) {
@@ -67,12 +69,13 @@ $(document).ready(function () {
                     name : [0,0,0,0].map(function () {
                             return String(Math.floor(Math.random()*10));
                         }).join(""),
+                    description : "user marker",
                     mutable : true,
                     group_id : -1,
                     latitude : pt.lat(),
                     longitude : pt.lng(),
-                }).show()
-            );
+                })
+            ).show();
             $("table#group_-1").append(row.tr);
         }
     });
