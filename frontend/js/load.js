@@ -38,6 +38,41 @@ $(document).ready(function () {
     });
     $(window).resize();
     
+    groups.each(function (acc,group) {
+        var mGroup = new MarkerGroup(
+            map, group,
+            markers.filter(function (key,marker) {
+                return marker.group_id == group.id;
+            })
+        );
+        $("div#marker-groups").append(mGroup.elem);
+    });
+    
+    $("img#marker").draggable({ helper : "clone" });
+    canvas.droppable({
+        drop : function (ev,ui) {
+            var pt = map.fromContainerPixelToLatLng(
+                new google.maps.Point(
+                    ev.pageX - ev.offsetX + 8,
+                    ev.pageY - ev.offsetY + 33
+                )
+            );
+            
+            var row = new MarkerRow(
+                map, new Marker(map, {
+                    name : [0,0,0,0].map(function () {
+                            return String(Math.floor(Math.random()*10));
+                        }).join(""),
+                    mutable : true,
+                    group_id : -1,
+                    latitude : pt.lat(),
+                    longitude : pt.lng(),
+                }).show()
+            );
+            $("table#group_-1").append(row.tr);
+        }
+    });
+    
     $.getJSON("/data/priority-lists/get", function (data) {
         $(data).map(function (i,x) {
             var overlay = new GGeoXml(x.kml);
@@ -83,180 +118,10 @@ $(document).ready(function () {
         });
         map.addOverlay(deformations.at(name).overlay);
     });
-    drawMarkers(map);
+    
     drawGrids(map);
     updateJobs();
 });
-
-function drawMarkers(map) {
-    markers.filter(function (x) { return x.marker }).each(function (x) {
-        map.removeOverlay(x.marker);
-    });
-    
-    groups.cons("User", { id : -1, name : "User" }).each(function (name,group) {
-        function item (prefix,name,hash,collapse) {
-            var li = $("<li>")
-                .append(
-                    $("<input>")
-                        .attr("type", "checkbox")
-                        .attr("name", prefix + name)
-                )
-            ;
-            if (name.match(/^user_/)) {
-                li.append($("<input>").attr({
-                    type : "text",
-                    value : name,
-                    change : function () {
-                        markers.at(name).name = this.value;
-                        markers.move_(name,this.value);
-                        name = this.value;
-                    }
-                }));
-            }
-            else {
-                li.append($("<label>")
-                    .attr("for", prefix + name)
-                    .text(name)
-                );
-            }
-            if (hash.description) {
-                li.append(
-                    $("<span>").text(" -- " + hash.description)
-                );
-            }
-            return li;
-        }
-        
-        var ul = $("<ul>");
-        markers
-            .sort() // sort by key name
-            .filter(function (name,marker) {
-                return marker.group_id == group.id;
-            })
-            .each(function (name,marker) {
-                var li = item("marker_",name,marker);
-                li.find("input:checkbox").change(function () {
-                    var m = markers.at(name);
-                    m.checked = $(this).attr("checked");
-                    if (m.checked) {
-                        m.marker = new google.maps.Marker(
-                            new google.maps.LatLng(m.latitude, m.longitude),
-                            { draggable : true, dragCrossMove : true }
-                        );
-                        
-                        google.maps.Event.addListener(m.marker, "dragend",
-                            function (pos) {
-                                // set the marker back to its old position and
-                                // hide it
-                                m.marker.setLatLng(new google.maps.LatLng(
-                                    m.latitude, m.longitude
-                                ));
-                                m.checked = false;
-                                map.removeOverlay(m.marker);
-                                
-                                // so that a new user marker can take its place
-                                m.marker.hide();
-                                var ico = new google.maps.Icon(G_DEFAULT_ICON);
-                                ico.image = "/images/green-marker.png";
-                                
-                                var userMarker = {
-                                    name : name,
-                                    checked : true,
-                                    group_id : -1,
-                                    latitude : pos.lat(),
-                                    longitude : pos.lng(),
-                                    mutable : true,
-                                    marker : new google.maps.Marker(pos, {
-                                        draggable : true,
-                                        dragCrossMove : true,
-                                        icon : ico
-                                    })
-                                };
-                                markers = markers.cons("user_" + name, userMarker);
-                                map.addOverlay(userMarker.marker);
-                            }
-                        );
-                        map.addOverlay(m.marker);
-                    }
-                    else if (m.marker) {
-                        map.removeOverlay(m.marker);
-                    }
-                });
-                ul.append(li).hide();
-            })
-        ;
-        
-        var im = $("<img>")
-            .attr("src", "/images/collapsed.png")
-            .toggle(expand,collapse);
-        
-        function expand () {
-            im.attr("src", "/images/expanded.png");
-            ul.show();
-        }
-        
-        function collapse () {
-            $(elem).removeClass("expanded");
-            im.attr("src", "/images/collapsed.png");
-            ul.hide();
-        }
-        
-        var elem = item("group_",name,group)
-            .addClass("collapsable")
-            .prepend(im)
-        ;
-        elem.find("input:checkbox").change(function () {
-            var checked = $(this).attr("checked");
-            ul.find("input:checkbox")
-                .attr("checked",checked)
-                .change();
-        });
-        
-        elem.find("label").toggle(expand,collapse);
-        
-        $("ul#markers")
-            .append(elem)
-            .append(ul)
-        ;
-        
-        $("img#marker").draggable({ helper : "clone" });
-        var canvas = $("#map_canvas");
-        canvas.droppable({
-            drop : function (ev,ui) {
-                var pt = map.fromContainerPixelToLatLng(
-                    new google.maps.Point(
-                        ev.pageX - ev.offsetX + 8,
-                        ev.pageY - ev.offsetY + 33
-                    )
-                );
-                var name = "user_" + String(markers.filter(function (key,_) {
-                    return key.match(/^user_/)
-                }).length);
-                
-                var ico = new google.maps.Icon(G_DEFAULT_ICON);
-                ico.image = "/images/green-marker.png";
-                
-                var marker = {
-                    name : name,
-                    checked : true,
-                    group_id : -1,
-                    latitude : pt.lat(),
-                    longitude : pt.lng(),
-                    mutable : true,
-                    marker : new google.maps.Marker(pt, {
-                        draggable : true,
-                        dragCrossMove : true,
-                        icon : ico
-                    })
-                };
-                markers = markers.cons(name, marker);
-                map.addOverlay(marker.marker);
-                $("ul#markers").empty();
-                drawMarkers(map);
-            }
-        });
-    });
-}
 
 function drawGrids(map) {
     function with_id (id) {

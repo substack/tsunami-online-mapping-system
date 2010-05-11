@@ -9,7 +9,7 @@
         <li><a href="#admin-tab">admin</a></li>
     </ul>
     <form id="params-form" action="/submit-job" method="post" onsubmit='
-        var params = $(this).serializeArray().reduce(function (acc,x) {
+         var params = $(this).serializeArray().reduce(function (acc,x) {
             acc[x.name] = x.value;
             return acc;
         }, {})
