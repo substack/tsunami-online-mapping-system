@@ -38,6 +38,10 @@ $(document).ready(function () {
     });
     $(window).resize();
     
+    $("div#marker-groups").append(
+        (new MarkerGroup(map,{id : -1, name : "user"},[])).elem
+    );
+    
     groups.each(function (acc,group) {
         var mGroup = new MarkerGroup(
             map, group,

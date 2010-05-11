@@ -105,14 +105,14 @@ function MarkerRow(map,marker) {
 // collection of markers
 function MarkerGroup(map,group,markers) {
     this.expand = function () {
-        im.attr("src", "/images/expanded.png");
+        img.attr("src", "/images/expanded.png");
         table.css("visibility","visible");
         return this;
     };
     
     this.collapse = function () {
         $(this.elem).removeClass("expanded");
-        im.attr("src", "/images/collapsed.png");
+        img.attr("src", "/images/collapsed.png");
         table.css("visibility","hidden");
         return this;
     }
@@ -126,11 +126,12 @@ function MarkerGroup(map,group,markers) {
     var table = $("<table>").attr("id", "group_" + group.id);
     
     $(markers.map(function (i,marker) {
-        var row = new MarkerRow(map,marker);
+        var row = new MarkerRow(map, new Marker(map,marker));
         return row.tr;
     })).appendTo(table);
     
-    var im = $("<img>").toggle(this.expand,this.collapse);
+    var img = $("<img>");
+    img.toggle(this.expand,this.collapse);
     
     var label = $("<label>")
         .attr("for", checkbox.attr("name"))
