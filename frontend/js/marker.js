@@ -39,12 +39,10 @@ function MarkerRow(map,marker) {
         .attr("type", "checkbox")
         .attr("name", "marker_" + marker.name)
         .change(function () {
-            if ($(this).attr("checked")) {
-                marker.show();
-            }
-            else {
-                marker.hide();
-            }
+            $(this).attr("checked")
+                ? marker.show()
+                : marker.hide()
+            ;
         })
     ;
     var nameOrBox = marker.mutable
@@ -114,26 +112,37 @@ function MarkerRow(map,marker) {
 function MarkerGroup(map,group,markers) {
     this.expand = function () {
         img.attr("src", "/images/expanded.png");
-        table.hide();
+        table.show();
         return this;
     };
     
     this.collapse = function () {
         img.attr("src", "/images/collapsed.png");
-        table.show();
+        table.hide();
         return this;
     }
     
-    var checkbox = $("<input>").attr({
-        name : "group_" + group.name,
-        type : "checkbox",
-        checked : "false"
-    });
+    var checkbox = $("<input>")
+        .attr({
+            name : "group_" + group.name,
+            type : "checkbox",
+            checked : false
+        })
+        .change(function () {
+            var checked = $(this).attr("checked");
+            rows.each(function (i,row) {
+                if (checked) row.show();
+                else row.hide();
+            })
+        })
+    ;
     
     var table = $("<table>").attr("id", "group_" + group.id);
-    
-    markers.each(function (i,marker) {
+    var rows = markers.map(function (key,marker) {
         var row = new MarkerRow(map, new Marker(map,marker));
+        return row;
+    });
+    rows.each(function (key,row) {
         table.append(row.tr);
     });
     
