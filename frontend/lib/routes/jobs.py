@@ -49,39 +49,44 @@ def start_job(request,job_id) :
 @post('/submit-job')
 def submit_job(request) :
     params = DefaultDict('', request.POST.items())
-    grids = [
-        x.group(1) for x in
-            [ re.match(r'^grid_(.+)',y) for y in params.keys() ]
-        if x
+    
+    # grids
+    grid_names = [ x.group(1) for x in
+        [ re.match(r'^grid_(.+)',y) for y in params.keys() ] if x
     ]
-    markers = [
-        x.group(1) for x in
-            [ re.match(r'^marker_(.+)',y) for y in params.keys() ]
-        if x
+    grids = [ grid for grid in
+        [ Grid.get_by(name=name) for name in grid_names ]
+        if grid is not None
     ]
+    
+    # markers already in the database
+    marker_names = [ x.group(1) for x in
+        [ re.match(r'^marker_(.+)',y) for y in params.keys() ] if x
+    ]
+    markers = [ marker for marker in
+        [ Marker.get_by(name=name) for name in marker_names ]
+        if marker is not None
+    ]
+    
+    user_marker_names = [ x.group(1) for x in
+        [ re.match(r'^user_marker_(.+)',y) for y in params.keys() ] if x
+    ]
+    user_markers = []
     
     keys = """
         time_step output_step sea_level bottom_friction earth_radius
         earth_gravity earth_rotation
-    """.split()
-    
-    skeys = """
+        
         person name description nodes node_type queue_type
     """.split()
     
-    missing = [ key for key in keys + skeys if not params.has_key(key) ]
+    missing = [ key for key in keys if not params.has_key(key) ]
     if missing : return 'Empty parameters: %s' % ' '.join(missing)
     
     session.add(Scenario(
-        grids=filter(
-            lambda x : x is not None,
-            [ Grid.query.filter_by(name=key) for key in grids ]
-        ),
-        markers=filter(
-            lambda x : x is not None,
-            [ Marker.query.filter_by(name=key) for key in markers ]
-        ),
-        jobs=[ Job(
+        grids = grids,
+        markers = markers + user_markers,
+        jobs = [ Job(
             person=params['person'],
             name=params['name'],
             description=params['description'],
@@ -91,8 +96,14 @@ def submit_job(request) :
             status='pending',
             progress=0.0
         ) ],
-        modeling_time=0.0,
-        **dict((key,float(params[key])) for key in keys)
+        modeling_time = 0.0,
+        time_step = float(params['time_step']),
+        output_step = float(params['output_step']),
+        sea_level = float(params['sea_level']),
+        bottom_friction = float(params['bottom_friction']),
+        earth_radius = float(params['earth_radius']),
+        earth_gravity = float(params['earth_gravity']),
+        earth_rotation = float(params['earth_rotation']),
     ))
     session.commit()
     return 'ok'
