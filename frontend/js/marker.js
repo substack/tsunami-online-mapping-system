@@ -63,24 +63,28 @@ function MarkerRow(map,marker) {
             })
         : $("<span>").text(marker.name)
     ;
-    var latBox = $("<input>").attr({
-        type : "hidden",
-        name : "lat_marker_" + marker.name
-    });
-    var lonBox = $("<input>").attr({
-        type : "hidden",
-        name : "lon_marker_" + marker.name
-    });
+    var latBox = $("<input>")
+        .attr("type","hidden")
+        .attr("name", "lat_marker_" + marker.name)
+        .val(marker.latitude)
+    ;
+    var lonBox = $("<input>")
+        .attr("type","hidden")
+        .attr("name", "lon_marker_" + marker.name)
+        .val(marker.longitude)
+    ;
+    
+    var descTd = $("<td>");
+    marker.mutable
+        ? descTd.append(latBox,lonBox) 
+        : descTd.text(marker.description)
+    ;
     
     this.tr = $("<tr>").append(
         $("<td>").append(checkbox),
         $("<td>").append(nameOrBox),
-        $("<td>").text(marker.description)
+        descTd
     );
-    
-    if (marker.mutable) {
-        this.tr.append(latBox,lonBox);
-    }
     
     this.hide = function () {
         checkbox.attr("checked",false);
@@ -94,7 +98,16 @@ function MarkerRow(map,marker) {
         return this;
     };
     
-    if (! marker.mutable) {
+    if (marker.mutable) {
+        // drag a mutable marker, updating its lat/lon
+        google.maps.Event.addListener(
+            marker.gMarker, "dragend", function (pos) {
+                latBox.val(pos.lat());
+                lonBox.val(pos.lng());
+            }
+        );
+    }
+    else {
         // drag an immutable marker, creating a mutable marker in its place
         google.maps.Event.addListener(
             marker.gMarker, "dragend",

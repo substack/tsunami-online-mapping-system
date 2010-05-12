@@ -69,7 +69,6 @@ $(document).ready(function () {
                     name : "user_" + [0,0,0,0].map(function () {
                             return String(Math.floor(Math.random()*10));
                         }).join(""),
-                    description : "user marker",
                     mutable : true,
                     group_id : -1,
                     latitude : pt.lat(),

@@ -68,10 +68,20 @@ def submit_job(request) :
         if marker is not None
     ]
     
+    # new user markers to be created
     user_marker_names = [ x.group(1) for x in
         [ re.match(r'^user_marker_(.+)',y) for y in params.keys() ] if x
     ]
-    user_markers = []
+    user_group = Group.get_by(id=-1) or Group(id=-1, name='user')
+    
+    user_markers = [ Marker(
+        name = name,
+        description = '',
+        latitude = float(params['lat_marker_' + name]),
+        longitude = float(params['lon_marker_' + name]),
+        group = user_group,
+        user = True
+    ) for name in user_marker_names if params['marker_' + name] == 'on' ]
     
     keys = """
         time_step output_step sea_level bottom_friction earth_radius
