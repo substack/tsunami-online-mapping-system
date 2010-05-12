@@ -34,6 +34,8 @@ function Marker(map,params) {
 
 // manage checkboxes for markers
 function MarkerRow(map,marker) {
+    var row = this;
+    
     // the marker's row in the markers tab
     var checkbox = $("<input>")
         .attr("type", "checkbox")
@@ -90,19 +92,19 @@ function MarkerRow(map,marker) {
                         marker.latitude, marker.longitude
                     )
                 );
-                marker.hide();
+                row.hide();
                 
                 // add the new marker to the user group
-                var row = new MarkerRow(
+                var newRow = new MarkerRow(
                     map, new Marker(map,{
                         name : "user_" + marker.name,
                         group_id : -1,
                         latitude : pos.lat(),
                         longitude : pos.lng(),
                         mutable : true,
-                    }).show()
-                );
-                $("table#group_-1").append(row.tr);
+                    })
+                ).show();
+                $("table#group_-1").append(newRow.tr);
             }
         );
     }
