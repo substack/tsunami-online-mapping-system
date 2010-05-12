@@ -66,7 +66,7 @@ $(document).ready(function () {
             
             var row = new MarkerRow(
                 map, new Marker(map, {
-                    name : [0,0,0,0].map(function () {
+                    name : "user_" + [0,0,0,0].map(function () {
                             return String(Math.floor(Math.random()*10));
                         }).join(""),
                     description : "user marker",

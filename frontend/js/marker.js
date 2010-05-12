@@ -50,24 +50,37 @@ function MarkerRow(map,marker) {
     var nameOrBox = marker.mutable
         ? $("<input>")
             .attr("type", "textbox")
+            .attr("name", "user_marker_" + marker.name)
             .val(marker.name)
             .change(function () {
                 // update the marker input box's name
                 var val = $(this).val();
                 checkbox.attr("name", "marker_" + val);
+                nameOrBox.attr("name", "name_marker_" + val);
+                latBox.attr("name", "lat_marker_" + val);
+                lonBox.attr("name", "lon_marker_" + val);
                 marker.name = val;
             })
         : $("<span>").text(marker.name)
     ;
-    var desc = $("<span>").text(marker.description);
+    var latBox = $("<input>").attr({
+        type : "hidden",
+        name : "lat_marker_" + marker.name
+    });
+    var lonBox = $("<input>").attr({
+        type : "hidden",
+        name : "lon_marker_" + marker.name
+    });
     
     this.tr = $("<tr>").append(
         $("<td>").append(checkbox),
         $("<td>").append(nameOrBox),
-        $("<td>")
-            .css("min-width","5em")
-            .append(desc)
+        $("<td>").text(marker.description)
     );
+    
+    if (marker.mutable) {
+        this.tr.append(latBox,lonBox);
+    }
     
     this.hide = function () {
         checkbox.attr("checked",false);
