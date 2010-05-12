@@ -107,8 +107,8 @@ class Marker(Entity,JSON) :
     scenario = ManyToMany('Scenario')
     longitude = Column(Float)
     latitude = Column(Float)
-    
     group = ManyToOne('Group')
+    user = Column(Boolean)
  
 class Job(Entity,JSON) :
     __tablename__ = 'jobs'

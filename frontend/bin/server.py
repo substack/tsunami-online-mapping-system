@@ -49,11 +49,14 @@ app = None
 def index(request) :
     cron_interval = Option.query.filter_by(key='cron-interval').first() 
     return app.render('index.html',
-        json=dict(zip(
-            'deformations markers groups grids points'.split(),
-            [ x.json() for x in [Deformation,Marker,Group,Grid,Point] ]
-        )),
-        cron_interval=str(cron_interval and cron_interval.value or 5)
+        json = {
+            'markers' : Marker.json(Marker.query.filter_by(user=False)),
+            'deformations' : Deformation.json(),
+            'groups' : Group.json(),
+            'grids' : Grid.json(),
+            'points' : Point.json(),
+        },
+        cron_interval = str(cron_interval and cron_interval.value or 5),
     )
 
 @get('/images/(?P<filename>.+)')
